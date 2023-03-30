@@ -25,3 +25,39 @@ Outre la mise en place d’un modèle simple permettant de prédire la variable 
 
 - Amélioration du modèle de prédiction
 - Création d’une UI permettant d'interagir avec l’API
+
+----------------------------
+
+## Collecte et compréhension des données
+
+- Obtenir des ensembles de données pertinents pour l'entraînement et la validation du modèle
+- Nettoyer et prétraiter les données pour faciliter l'apprentissage du modèle
+
+- Python 
+- 2 jours
+
+## Choix et dev Model de ML
+- Python 
+- 2 semaine
+- SVM / RF / 
+
+### Entrainer le model:
+- 3/4 jours
+
+### Validation :
+- 1/2 jours
+
+## Dev backend
+- 2 semaines
+
+
+## Dev front:
+- HTML / CSS / JS
+- 2 semaines
+
+
+## Implémentation sur AWS
+- EC2 (docker)
+- 1 mois
+
+
