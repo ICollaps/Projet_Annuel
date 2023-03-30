@@ -5,6 +5,46 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
-        <h1>Hello, World!</h1>
+        <h1 class="h1">Sepsis Test</h1>
     </body>
+</html>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Flask App</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<div class="container">
+		<h1>Mon formulaire</h1>
+		<form>
+			<label for="nom">Nom :</label>
+			<input type="text" id="nom" name="nom"><br>
+
+			<label for="prenom">Prénom :</label>
+			<input type="text" id="prenom" name="prenom"><br>
+
+			<label for="email">Email :</label>
+			<input type="email" id="email" name="email"><br>
+
+			<label for="telephone">Téléphone :</label>
+			<input type="tel" id="telephone" name="telephone"><br>
+
+			<label for="adresse">Adresse :</label>
+			<input type="text" id="adresse" name="adresse"><br>
+
+			<label for="ville">Couleur préférée :</label>
+			<input type="text" id="ville" name="ville"><br>
+
+			<label for="pays">CB :</label>
+			<input type="text" id="pays" name="pays"><br>
+
+			<label for="message">Message :</label>
+			<textarea id="message" name="message"></textarea><br>
+
+			<input type="submit" value="Envoyer">
+		</form>
+	</div>
+</body>
 </html>
