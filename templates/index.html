@@ -1,16 +1,5 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Flask App</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-    </head>
-    <body>
-        <h1 class="h1">Sepsis Test</h1>
-    </body>
-</html>
-
-<!DOCTYPE html>
-<html>
 <head>
 	<title>Flask App</title>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
@@ -18,7 +7,7 @@
 <body>
 	<div class="container">
 		<h1>Mon formulaire</h1>
-		<form>
+		<form action="/submit_form" method="post">
 			<label for="nom">Nom :</label>
 			<input type="text" id="nom" name="nom"><br>
 

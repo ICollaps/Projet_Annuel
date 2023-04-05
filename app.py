@@ -10,6 +10,14 @@ model = joblib.load("model/trained_models/best_model.pkl")
 def index():
     return render_template('index.html')
 
+
+@app.route('/submit_form', methods=['POST'])
+def submit_form():
+    # Vous pouvez ajouter du code ici pour traiter les données du formulaire si nécessaire
+    return redirect(url_for('health'))
+
+
+
 @app.route('/health')
 def health():
     return render_template('form.html')
@@ -29,14 +37,10 @@ def predict():
     input_values = [PRG, PL, PR, SK, TS, M11, BD2, Age, Insurance]
 
     prediction = model.predict([input_values])[0]
-    return f'La prédiction du modèle est : {prediction}'
+    probabilities = model.predict_proba([input_values])[0]
+    probability = round(probabilities[prediction] * 100, 2)
 
-
-
-
-
-
-
+    return render_template('prediction_result.html', prediction=prediction, probability=probability)
 
 
 
