@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Prédiction avec FLAML</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_user_input.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+  </head>
+  <body>
+    <h1>Saisir les données pour la prédiction</h1>
+    <form action="/health/predict" method="post">
+
+      <label for="PRG">PRG:</label>
+      <div class="input-wrapper">
+        <input type="number" name="PRG" placeholder="Exemple: 6" required>
+        <i class="fas fa-info-circle">
+          <span class="tooltip-text">Description de la donnee PRG</span>
+        </i>
+      </div>
+      <br>
+
+
+      <label for="PL">PL:</label>
+      <div class="input-wrapper">
+      <input type="number" name="PL" placeholder="Exemple : 148" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee PL</span>
+      </i>
+      </div>
+      <br>
+
+
+      
+      <label for="PR">PR:</label>
+      <div class="input-wrapper">
+      <input type="number" name="PR" placeholder="Exemple : 72" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee PR</span>
+      </i>
+      </div>
+      <br>
+
+
+      <label for="SK">SK:</label>
+      <div class="input-wrapper">
+      <input type="number" name="SK" placeholder="Exemple : 35" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee SK</span>
+      </i>
+      </div>
+      <br>
+
+
+      <label for="TS">TS:</label>
+      <div class="input-wrapper">
+      <input type="number" name="TS" placeholder="Exemple : 0" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee TS</span>
+      </i>
+      </div>
+      <br>
+
+
+
+      <label for="M11">M11:</label>
+      <div class="input-wrapper">
+      <input type="number" step="0.1" placeholder="Exemple : 36.6" name="M11" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee M11</span>
+      </i>
+      </div>
+      <br>
+
+
+
+      <label for="BD2">BD2:</label>
+      <div class="input-wrapper">
+      <input type="number" step="0.001" placeholder="Exemple : 0.627" name="BD2" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee BD2</span>
+      </i>
+      </div>
+      <br>
+
+
+
+      <label for="Age">Age:</label>
+      <div class="input-wrapper">
+      <input type="number" name="Age" placeholder="Exemple : 50" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee Age</span>
+      </i>
+      </div>
+      <br>
+
+
+      <label for="Insurance">Insurance:</label>
+      <div class="input-wrapper">
+      <input type="number" name="Insurance" placeholder="Exemple : 0" required>
+      <i class="fas fa-info-circle">
+        <span class="tooltip-text">Description de la donnee Insurance</span>
+      </i>
+      </div>
+      <br>
+
+      <button type="submit">Prédire</button>
+    </form>
+  </body>
+</html>

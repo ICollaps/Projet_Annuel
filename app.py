@@ -20,7 +20,7 @@ def submit_form():
 
 @app.route('/health')
 def health():
-    return render_template('form.html')
+    return render_template('user_input.html')
 
 @app.route('/health/predict', methods=['POST'])
 def predict():
