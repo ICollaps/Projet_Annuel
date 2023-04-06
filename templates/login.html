@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_login.css') }}">
+  </head>
+  <body>
+    {% if current_user.is_authenticated %}
+      <p>Bonjour, {{ current_user.username }}!</p>
+      <a href="{{ url_for('logout') }}">Se déconnecter</a>
+    {% else %}
+      <h1>Login</h1>
+      
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      
+      <form action="/login" method="post">
+        <label for="username">Nom d'utilisateur:</label>
+        <input type="text" name="username" required><br>
+  
+        <label for="password">Mot de passe:</label>
+        <input type="password" name="password" required><br>
+  
+        <button type="submit">Se connecter</button>
+      </form>
+    {% endif %}
+    <!-- Autres éléments du fichier login.html -->
+    <br>
+    <a href="{{ url_for('register') }}">Pas encore inscrit ? Inscrivez-vous ici</a>
+
+  </body>
+</html>

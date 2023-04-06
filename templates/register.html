@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Inscription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_user_input.css') }}">
+  </head>
+  <body>
+    <h1>Inscription</h1>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <form action="/register" method="post">
+      <label for="username">Nom d'utilisateur:</label>
+      <input type="text" name="username" required><br>
+
+      <label for="password">Mot de passe:</label>
+      <input type="password" name="password" required><br>
+
+      <button type="submit">S'inscrire</button>
+    </form>
+  </body>
+</html>
