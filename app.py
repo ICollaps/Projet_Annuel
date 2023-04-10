@@ -3,6 +3,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import joblib
+from functools import wraps
+from flask import abort
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != 'admin':
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+    return decorated_function
 
 app = Flask(__name__)
 
@@ -19,6 +29,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    ROLE_CHOICES = [('patient', 'Patient'), ('médecin', 'Médecin'), ('admin', 'Admin')]
+    role = db.Column(db.String(10), nullable=False, default='patient')
 
 
 @login_manager.user_loader
@@ -32,14 +44,17 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        
+
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Vous êtes connecté avec succès !', 'success')
-            return redirect(url_for('menu'))
+            if user.role == 'admin':
+                return redirect(url_for('admin'))
+            else:
+                return redirect(url_for('menu'))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect", 'danger')
-            
+
     return render_template('login.html')
 
 
@@ -56,14 +71,15 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        role = request.form['role']  # Ajoutez cette ligne
         hashed_password = generate_password_hash(password, method='sha256')
-        
+
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash("Nom d'utilisateur déjà pris, veuillez en choisir un autre.", 'danger')
             return redirect(url_for('register'))
 
-        new_user = User(username=username, password=hashed_password)
+        new_user = User(username=username, password=hashed_password, role=role)  # Modifiez cette ligne
         db.session.add(new_user)
         db.session.commit()
         flash("Inscription réussie ! Veuillez vous connecter.", 'success')
@@ -72,12 +88,38 @@ def register():
     return render_template('register.html')
 
 
+@app.route('/admin')
+@login_required
+@admin_required
+def admin():
+    users = User.query.all()
+    return render_template('admin.html', users=users)
+
+
+
+
+@app.route('/delete_user/<int:user_id>')
+@login_required
+def delete_user(user_id):
+    user_to_delete = User.query.get_or_404(user_id)
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    flash("L'utilisateur a été supprimé avec succès.", "success")
+    return redirect(url_for('view_users'))
+
+
+
 
 
 @app.route('/menu')
 @login_required
 def menu():
-    return render_template('menu.html')
+    if current_user.role == 'patient':
+        return render_template('menu_patient.html')
+    elif current_user.role == 'médecin':
+        return render_template('menu_medecin.html')
+    else:
+        return "Erreur : rôle non reconnu"
 
 @app.route('/history')
 @login_required
@@ -97,7 +139,10 @@ def index():
     return render_template('welcome.html')
 
 
-
+@app.route('/medecin')
+@login_required
+def medecin():
+    return render_template('medecin.html')
 
 
 @app.route('/health')

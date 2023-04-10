@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Inscription</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style_user_input.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_user_input.css') }}">
   </head>
   <body>
     <h1>Inscription</h1>
@@ -22,6 +22,13 @@
 
       <label for="password">Mot de passe:</label>
       <input type="password" name="password" required><br>
+
+      <label for="role">Role:</label>
+      <select name="role" id="role" required>
+        <option value="patient">Patient</option>
+        <option value="médecin">Médecin</option>
+        <option value="admin">Admin</option>
+      </select><br>
 
       <button type="submit">S'inscrire</button>
     </form>

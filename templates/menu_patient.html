@@ -2,15 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Menu</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_menu.css') }}">
+    <title>Menu Patient</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style_menu.css') }}">
   </head>
   <body>
-    <h1>Menu</h1>
+    <h1>Menu Patient</h1>
     <nav>
       <ul>
         <li><a href="{{ url_for('health') }}">Health</a></li>
-        <li><a href="{{ url_for('history') }}">History</a></li>
       </ul>
     </nav>
     <p>
