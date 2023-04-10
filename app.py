@@ -1,10 +1,10 @@
-from flask import Flask, redirect, url_for, render_template , request , flash
+from flask import Flask, redirect, url_for, render_template , request , flash , Blueprint , abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+
 from werkzeug.security import generate_password_hash, check_password_hash
 import joblib
 from functools import wraps
-from flask import abort
 
 def admin_required(f):
     @wraps(f)
@@ -13,6 +13,17 @@ def admin_required(f):
             abort(403)  # Forbidden
         return f(*args, **kwargs)
     return decorated_function
+
+def medecin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != 'médecin':
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+
 
 app = Flask(__name__)
 
@@ -145,6 +156,58 @@ def medecin():
     return render_template('medecin.html')
 
 
+@app.route('/medecin/predictions')
+@login_required
+@medecin_required
+def medecin_predictions():
+    
+    predictions = Prediction.query.all()
+    formatted_predictions = []
+
+    for p in predictions:
+        formatted_predictions.append({
+            'id': p.id,
+            'user_id': p.user_id,
+            'PRG': p.PRG,
+            'PL': p.PL,
+            'PR': p.PR,
+            'SK': p.SK,
+            'TS': p.TS,
+            'M11': p.M11,
+            'BD2': p.BD2,
+            'Age': p.Age,
+            'Insurance': p.Insurance,
+            'prediction': int.from_bytes(p.prediction, byteorder='little'),
+            'probability': p.probability
+        })
+    
+    ages = [p['Age'] for p in formatted_predictions]
+
+
+    return render_template('prediction_analysis.html', predictions=formatted_predictions , ages=ages)
+
+
+
+class Prediction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    PRG = db.Column(db.Float, nullable=False)
+    PL = db.Column(db.Float, nullable=False)
+    PR = db.Column(db.Float, nullable=False)
+    SK = db.Column(db.Float, nullable=False)
+    TS = db.Column(db.Float, nullable=False)
+    M11 = db.Column(db.Float, nullable=False)
+    BD2 = db.Column(db.Float, nullable=False)
+    Age = db.Column(db.Float, nullable=False)
+    Insurance = db.Column(db.Float, nullable=False)
+    prediction = db.Column(db.Integer, nullable=False)
+    probability = db.Column(db.Float, nullable=False)
+
+    user = db.relationship('User', backref=db.backref('predictions', lazy=True))
+
+
+
+
 @app.route('/health')
 @login_required
 def health():
@@ -169,6 +232,25 @@ def predict():
     probabilities = model.predict_proba([input_values])[0]
     probability = round(probabilities[prediction] * 100, 2)
 
+    # Enregistrer la prédiction dans la base de données
+    new_prediction = Prediction(
+        user_id=current_user.id,
+        PRG=PRG,
+        PL=PL,
+        PR=PR,
+        SK=SK,
+        TS=TS,
+        M11=M11,
+        BD2=BD2,
+        Age=Age,
+        Insurance=Insurance,
+        prediction=prediction,
+        probability=probability
+    )
+
+    db.session.add(new_prediction)
+    db.session.commit()
+
     return render_template('prediction_result.html', prediction=prediction, probability=probability)
 
 
@@ -176,4 +258,4 @@ def predict():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000,debug=True)
