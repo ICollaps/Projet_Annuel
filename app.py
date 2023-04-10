@@ -36,7 +36,7 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash('Vous êtes connecté avec succès !', 'success')
-            return redirect(url_for('health'))
+            return redirect(url_for('menu'))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect", 'danger')
             
@@ -74,6 +74,15 @@ def register():
 
 
 
+@app.route('/menu')
+@login_required
+def menu():
+    return render_template('menu.html')
+
+@app.route('/history')
+@login_required
+def history():
+    return render_template('history.html')
 
 
 
