@@ -230,9 +230,25 @@ def medecin_upload():
             db.session.add(new_prediction)
             db.session.commit()
             
-            results+=f"La prédiction du modèle pour le patient {user_id} est {prediction}, avec une probabilité associée de {probability}.\n"
-        
-        return results
+            header = '''<!doctype html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <title>Résultat de la prédiction</title>
+                <link rel="stylesheet" href="{{ url_for('static', filename='css/style_result.css') }}">
+            </head>
+            <body>
+                <h1>Résultat de la prédiction</h1>'''
+            
+            footer = '''
+                <a href="/medecin/upload">Retour</a>
+            </body>
+            </html>'''
+            
+            results+=f'''<p>La prédiction du modèle pour le patient {user_id} est {prediction}, avec une probabilité associée de {probability}.<p>'''
+
+        return header + results + footer
+    
     else:
         return '''
         <!doctype html>
