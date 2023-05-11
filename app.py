@@ -1,3 +1,4 @@
+from tokenize import String
 from flask import Flask, redirect, url_for, render_template , request , flash , Blueprint , abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -131,6 +132,7 @@ def menu():
         return render_template('menu_medecin.html')
     else:
         return "Erreur : rôle non reconnu"
+    
 
 @app.route('/history')
 @login_required
@@ -186,6 +188,69 @@ def medecin_predictions():
 
     return render_template('prediction_analysis.html', predictions=formatted_predictions , ages=ages)
 
+########################################################################################################################
+
+@app.route('/medecin/upload', methods=['GET', 'POST'])
+@login_required
+@medecin_required
+def medecin_upload():
+    if request.method == 'POST':
+        file = request.files['file']
+        # Read it as a pandas DataFrame:
+        import pandas as pd
+        import io
+        file_stream = io.StringIO(file.read().decode('utf-8'))
+        df = pd.read_csv(file_stream, delimiter=';')
+        results = ""
+        
+        for i in range(len(df)):
+        
+            input_values = [df["PRG"][i], df["PL"][i], df["PR"][i], df["SK"][i], df["TS"][i], df["M11"][i], df["BD2"][i], df["Age"][i], df["Insurance"][i]]
+
+            prediction = model.predict([input_values])[0]
+            probabilities = model.predict_proba([input_values])[0]
+            probability = round(probabilities[prediction] * 100, 2)
+            user_id = df["ID"][i]
+            # Enregistrer la prédiction dans la base de données
+            new_prediction = Prediction(
+                user_id=user_id,
+                PRG=df["PRG"][i],
+                PL=df["PL"][i],
+                PR=df["PR"][i],
+                SK=df["SK"][i],
+                TS=df["TS"][i],
+                M11=df["M11"][i],
+                BD2=df["BD2"][i],
+                Age=df["Age"][i],
+                Insurance=df["Insurance"][i],
+                prediction=prediction,
+                probability=probability
+            )
+
+            db.session.add(new_prediction)
+            db.session.commit()
+            
+            results+=f"La prédiction du modèle pour le patient {user_id} est {prediction}, avec une probabilité associée de {probability}.\n"
+        
+        return results
+    else:
+        return '''
+        <!doctype html>
+        <html>
+        <head>
+        <title>Upload your data file</title>
+        </head>
+        <body>
+        <h1>Upload your data file</h1>
+        <form method=post enctype=multipart/form-data>
+          <input type=file name=file>
+          <input type=submit value=Upload>
+        </form>
+        </body>
+        </html>
+        '''
+
+########################################################################################################################
 
 
 class Prediction(db.Model):
