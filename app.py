@@ -206,14 +206,13 @@ def medecin_upload():
         for i in range(len(df)):
         
             input_values = [df["PRG"][i], df["PL"][i], df["PR"][i], df["SK"][i], df["TS"][i], df["M11"][i], df["BD2"][i], df["Age"][i], df["Insurance"][i]]
-
+            user_display = int(df["ID"][i])
             prediction = model.predict([input_values])[0]
             probabilities = model.predict_proba([input_values])[0]
-            probability = round(probabilities[prediction] * 100, 2)
-            user_id = df["ID"][i]
+            probability = round(probabilities[prediction] * 100, 2) 
             # Enregistrer la prédiction dans la base de données
             new_prediction = Prediction(
-                user_id=user_id,
+                user_id=user_display,
                 PRG=df["PRG"][i],
                 PL=df["PL"][i],
                 PR=df["PR"][i],
@@ -245,7 +244,7 @@ def medecin_upload():
             </body>
             </html>'''
             
-            results+=f'''<p>La prédiction du modèle pour le patient {user_id} est {prediction}, avec une probabilité associée de {probability}.<p>'''
+            results+=f'''<p>La prédiction du modèle pour le patient {user_display} est {prediction}, avec une probabilité associée de {probability}.<p>'''
 
         return header + results + footer
     
