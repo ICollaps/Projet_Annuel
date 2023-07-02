@@ -4,6 +4,24 @@
     <meta charset="utf-8">
     <title>Inscription</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style_user_input.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+      $('#role').change(function(){
+        if($('#role').val() === 'patient') {
+          $('#doctor_name_select_label').show();
+          $('#doctor_name_select').show();
+          $('#doctor_name_label').hide();
+          $('#doctor_name').hide();
+        } else {
+          $('#doctor_name_select_label').hide();
+          $('#doctor_name_select').hide();
+          $('#doctor_name_label').show();
+          $('#doctor_name').show();
+        }
+      });
+    });
+    </script>
   </head>
   <body>
     <h1>Inscription</h1>
@@ -23,11 +41,27 @@
       <label for="password">Mot de passe:</label>
       <input type="password" name="password" required><br>
 
+      <label for="email">Adresse mail:</label>
+      <input type="email" name="email" required><br>
+
+      <label for="first_name">Prénom:</label>
+      <input type="first_name" name="first_name" required><br>
+
+      <label for="last_name">Nom de famille:</label>
+      <input type="last_name" name="last_name" required><br>
+
       <label for="role">Role:</label>
       <select name="role" id="role" required>
-        <option value="patient">Patient</option>
         <option value="médecin">Médecin</option>
-        <option value="admin">Admin</option>
+        <option value="patient">Patient</option>
+        <!-- <option value="admin">Admin</option> -->
+      </select><br>
+
+      <label for="doctor_name_select" id="doctor_name_select_label" style="display: none;">Nom du médecin:</label>
+      <select name="doctor_name_select" id="doctor_name_select" style="display: none;">
+        {% for doctor in doctors %}
+        <option value="{{ doctor.username }}">{{ doctor.last_name }} {{ doctor.first_name }}</option>
+        {% endfor %}
       </select><br>
 
       <button type="submit">S'inscrire</button>

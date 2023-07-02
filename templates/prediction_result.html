@@ -3,12 +3,48 @@
   <head>
     <meta charset="utf-8">
     <title>Résultat de la prédiction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style_result.css') }}">
   </head>
   <body>
-    <h1>Résultat de la prédiction</h1>
-    <p>La prédiction du modèle est : {{ prediction }}.</p>
-    <p>La probabilité associée est : {{ probability }} %.</p>
-    <a href="/">Retour au formulaire</a>
+    <div class="container">
+        <h1 class="mt-4 mb-4">Résultat de la prédiction</h1>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Résultat</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">La prédiction du modèle est : {{ prediction }}.</h3>
+                <p class="card-text">La probabilité associée est : {{ probability }} %.</p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Variables utilisées pour la prédiction</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Variable</th>
+                            <th scope="col">Valeur</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for variable in variables %}
+                            <tr>
+                                <td>{{ variable.name }}</td>
+                                <td>{{ variable.value }}</td>
+                                <td>{{ variable.description }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <a class="btn btn-primary" href="/">Retour au formulaire</a>
+    </div>
   </body>
 </html>

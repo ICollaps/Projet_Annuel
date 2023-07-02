@@ -1,6 +1,7 @@
 from tokenize import String
 from flask import Flask, redirect, url_for, render_template , request , flash , Blueprint , abort
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+import numpy as np
 
 from werkzeug.security import generate_password_hash, check_password_hash
 import joblib
@@ -93,23 +94,39 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
+    doctors = db.users.find({'role': 'médecin'})
+    
     if request.method == 'POST':
+
         username = request.form['username']
         password = request.form['password']
+        email = request.form['email']
         role = request.form['role']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        
         hashed_password = generate_password_hash(password, method='sha256')
+
 
         existing_user = db.users.find_one({'username': username})
         if existing_user:
             flash("Nom d'utilisateur déjà pris, veuillez en choisir un autre.", 'danger')
             return redirect(url_for('register'))
+        
+        
 
-        new_user = {'username': username, 'password': hashed_password, 'role': role}
+        if role == 'patient' :
+            doctor_name = request.form.get('doctor_name_select')
+            new_user = {'username': username, 'password': hashed_password, 'role': role , 'doctor_name' : doctor_name , 'email' :  email , 'first_name' : first_name , 'last_name' : last_name}
+        elif role == 'médecin' :
+            new_user = {'username': username, 'password': hashed_password, 'role': role , 'email' :  email , 'first_name' : first_name , 'last_name' : last_name}
+
         db.users.insert_one(new_user)
         flash("Inscription réussie ! Veuillez vous connecter.", 'success')
         return redirect(url_for('login'))
 
-    return render_template('register.html')
+    return render_template('register.html' , doctors=doctors)
 
 
 
@@ -301,50 +318,69 @@ def medecin():
 
 
 
-# @app.route('/health')
-# @login_required
-# def health():
-#     return render_template('user_input.html')
+@app.route('/health')
+@login_required
+def health():
+    return render_template('user_input.html')
 
-# @app.route('/health/predict', methods=['POST'])
-# @login_required
-# def predict():
-#     PRG = float(request.form['PRG'])
-#     PL = float(request.form['PL'])
-#     PR = float(request.form['PR'])
-#     SK = float(request.form['SK'])
-#     TS = float(request.form['TS'])
-#     M11 = float(request.form['M11'])
-#     BD2 = float(request.form['BD2'])
-#     Age = float(request.form['Age'])
-#     Insurance = float(request.form['Insurance'])
 
-#     input_values = [PRG, PL, PR, SK, TS, M11, BD2, Age, Insurance]
+@app.route('/health/predict', methods=['POST'])
+@login_required
+def predict():
+    PRG = float(request.form['PRG'])
+    PL = float(request.form['PL'])
+    PR = float(request.form['PR'])
+    SK = float(request.form['SK'])
+    TS = float(request.form['TS'])
+    M11 = float(request.form['M11'])
+    BD2 = float(request.form['BD2'])
+    Age = float(request.form['Age'])
+    Insurance = float(request.form['Insurance'])
 
-#     prediction = model.predict([input_values])[0]
-#     probabilities = model.predict_proba([input_values])[0]
-#     probability = round(probabilities[prediction] * 100, 2)
+    input_values = [PRG, PL, PR, SK, TS, M11, BD2, Age, Insurance]
 
-#     # Enregistrer la prédiction dans la base de données
-#     new_prediction = Prediction(
-#         user_id=current_user.id,
-#         PRG=PRG,
-#         PL=PL,
-#         PR=PR,
-#         SK=SK,
-#         TS=TS,
-#         M11=M11,
-#         BD2=BD2,
-#         Age=Age,
-#         Insurance=Insurance,
-#         prediction=prediction,
-#         probability=probability
-#     )
+    prediction = model.predict([input_values])[0]
+    probabilities = model.predict_proba([input_values])[0]
+    probability = round(probabilities[prediction] * 100, 2)
 
-#     db.session.add(new_prediction)
-#     db.session.commit()
+    variables = [
+        {'name': 'PRG', 'value': PRG, 'description': 'Description pour PRG'},
+        {'name': 'PL', 'value': PL, 'description': 'Description pour PL'},
+        {'name': 'PR', 'value': PR, 'description': 'Description pour PR'},
+        {'name': 'SK', 'value': SK, 'description': 'Description pour SK'},
+        {'name': 'TS', 'value': TS, 'description': 'Description pour TS'},
+        {'name': 'M11', 'value': M11, 'description': 'Description pour M11'},
+        {'name': 'BD2', 'value': BD2, 'description': 'Description pour BD2'},
+        {'name': 'Age', 'value': Age, 'description': 'Description pour Age'},
+        {'name': 'Insurance', 'value': Insurance, 'description': 'Description pour Insurance'}
+    ]
 
-#     return render_template('prediction_result.html', prediction=prediction, probability=probability)
+    # Enregistrer la prédiction dans la base de données MongoDB
+    new_prediction = {
+        'user_id': current_user.get_id(),
+        'PRG': PRG,
+        'PL': PL,
+        'PR': PR,
+        'SK': SK,
+        'TS': TS,
+        'M11': M11,
+        'BD2': BD2,
+        'Age': Age,
+        'Insurance': Insurance,
+        'prediction': prediction,
+        'probability': probability
+    }
+
+    def convert_numpy_int64(document):
+        for key, value in document.items():
+            if isinstance(value, np.int64):
+                document[key] = value.item()
+        return document
+
+    new_prediction = convert_numpy_int64(new_prediction)
+    db.predictions.insert_one(new_prediction)
+
+    return render_template('prediction_result.html', prediction=prediction, probability=probability, variables=variables)
 
 
 
