@@ -8,31 +8,55 @@
 </head>
 <body>
     <h1>Liste des utilisateurs</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Role</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
+    <form action="{{ url_for('delete_users') }}" method="POST">
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>****</td>
-                    <td>{{ user.role }}</td>
-                    <td>
-                        <form action="{{ url_for('admin', user_id=user.id) }}" method="POST">
-                          <button type="submit" class="btn-delete">Supprimer</button>
-                        </form>
-                      </td>
+                    <th></th> <!-- Colonne pour les checkboxes -->
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Role</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td><input type="checkbox" name="user_ids" value="{{ user.id }}"></td> <!-- Checkbox pour chaque ligne -->
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>****</td>
+                        <td>{{ user.role }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn-delete">Supprimer les utilisateurs sélectionnés</button> <!-- Bouton de suppression hors du tableau -->
+    </form>
+    <h1>Liste des prédictions</h1>
+    <form action="{{ url_for('delete_predictions') }}" method="POST">
+        <table>
+            <thead>
+                <tr>
+                    <th></th> <!-- Colonne pour les checkboxes -->
+                    <th>ID</th>
+                    <th>Prediction</th>
+                    <th>Probability</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prediction in predictions %}
+                    <tr>
+                        <td><input type="checkbox" name="prediction_ids" value="{{ prediction._id }}"></td> <!-- Checkbox pour chaque ligne -->
+                        <td>{{ prediction._id}}</td>
+                        <td>{{ prediction.prediction }}</td>
+                        <td>{{ prediction.probability }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn-delete">Supprimer les prédictions sélectionnées</button> <!-- Bouton de suppression hors du tableau -->
+    </form>
 </body>
 </html>
+

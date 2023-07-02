@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Résultat de la prédiction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_result.css') }}">
+  </head>
+  <body>
+    <div class="container">
+        <h1 class="mt-4 mb-4">Résultats de la prédiction</h1>
+        {% for prediction in predictions %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2>Résultat pour l'ID {{ prediction.ID }}</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">La prédiction du modèle est : {{ prediction.prediction }}.</h3>
+                <p class="card-text">La probabilité associée est : {{ prediction.probability }} %.</p>
+            </div>
+            <div class="card-footer">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Variable</th>
+                            <th scope="col">Valeur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PRG</td>
+                            <td>{{ prediction.PRG }}</td>
+                        </tr>
+                        <tr>
+                            <td>PL</td>
+                            <td>{{ prediction.PL }}</td>
+                        </tr>
+                        <tr>
+                            <td>PR</td>
+                            <td>{{ prediction.PR }}</td>
+                        </tr>
+                        <tr>
+                            <td>SK</td>
+                            <td>{{ prediction.SK }}</td>
+                        </tr>
+                        <tr>
+                            <td>TS</td>
+                            <td>{{ prediction.TS }}</td>
+                        </tr>
+                        <tr>
+                            <td>M11</td>
+                            <td>{{ prediction.M11 }}</td>
+                        </tr>
+                        <tr>
+                            <td>BD2</td>
+                            <td>{{ prediction.BD2 }}</td>
+                        </tr>
+                        <tr>
+                            <td>Age</td>
+                            <td>{{ prediction.Age }}</td>
+                        </tr>
+                        <tr>
+                            <td>Insurance</td>
+                            <td>{{ prediction.Insurance }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+        <a class="btn btn-primary" href="/menu">Retour au menu</a>
+    </div>
+  </body>
+</html>

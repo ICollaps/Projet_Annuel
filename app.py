@@ -2,12 +2,15 @@ from tokenize import String
 from flask import Flask, redirect, url_for, render_template , request , flash , Blueprint , abort
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import numpy as np
+import pandas as pd
+import io
 
 from werkzeug.security import generate_password_hash, check_password_hash
 import joblib
 from functools import wraps
 from pymongo import MongoClient
 from bson import ObjectId
+from bson.json_util import dumps
 
 
 def admin_required(f):
@@ -60,6 +63,19 @@ def load_user(user_id):
     user = db.users.find_one({'_id': ObjectId(user_id)})
     if user:
         return UserObj(user)
+    
+
+
+
+
+def convert_numpy_int64(document):
+        for key, value in document.items():
+            if isinstance(value, np.int64):
+                document[key] = value.item()
+        return document
+
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -72,10 +88,11 @@ def login():
             user_obj = UserObj(user)
             login_user(user_obj)
             flash('Vous êtes connecté avec succès !', 'success')
-            if user['role'] == 'admin':
-                return redirect(url_for('admin'))
-            else:
-                return redirect(url_for('menu'))
+            # if user['role'] == 'admin':
+            #     return redirect(url_for('admin'))
+            # else:
+            #     return redirect(url_for('menu'))
+            redirect(url_for('menu'))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect", 'danger')
 
@@ -135,19 +152,43 @@ def register():
 @admin_required
 def admin():
     users = db.users.find()
-    return render_template('admin.html', users=users)
+    predictions = db.predictions.find()
+    return render_template('admin.html', users=users , predictions=predictions)
 
 
 
 
-@app.route('/delete_user/<user_id>')
+@app.route('/delete_users', methods=['POST'])
 @login_required
 @admin_required  # Make sure only admin can delete users
-def delete_user(user_id):
-    # Deleting the user by its _id
-    db.users.delete_one({"_id": ObjectId(user_id)})
-    flash("L'utilisateur a été supprimé avec succès.", "success")
+def delete_users():
+    # Getting the list of user IDs from the form
+    user_ids = request.form.getlist('user_ids')
+
+    # Deleting the users by their _id
+    for user_id in user_ids:
+        db.users.delete_one({"_id": ObjectId(user_id)})
+    
+    flash(f"{len(user_ids)} utilisateur(s) ont été supprimé(s) avec succès.", "success")
     return redirect(url_for('admin'))
+
+
+@app.route('/delete_predictions', methods=['POST'])
+@login_required
+@admin_required  # Make sure only admin can delete predictions
+def delete_predictions():
+    # Getting the list of prediction IDs from the form
+    prediction_ids = request.form.getlist('prediction_ids')
+
+    # Deleting the predictions by their _id
+    for prediction_id in prediction_ids:
+        db.predictions.delete_one({"_id": ObjectId(prediction_id)})
+
+    flash(f"{len(prediction_ids)} prédiction(s) ont été supprimée(s) avec succès.", "success")
+    return redirect(url_for('admin'))
+
+
+
 
 
 
@@ -160,6 +201,8 @@ def menu():
         return render_template('menu_patient.html')
     elif current_user.role == 'médecin':
         return render_template('menu_medecin.html')
+    elif current_user.role == 'admin':
+        return render_template('menu_admin.html')
     else:
         return "Erreur : rôle non reconnu"
     
@@ -188,114 +231,92 @@ def medecin():
     return render_template('medecin.html')
 
 
-# @app.route('/medecin/predictions')
-# @login_required
-# @medecin_required
-# def medecin_predictions():
+@app.route('/medecin/predictions')
+@login_required
+@medecin_required
+def medecin_predictions():
     
-#     predictions = Prediction.query.all()
-#     formatted_predictions = []
-
-#     for p in predictions:
-#         formatted_predictions.append({
-#             'id': p.id,
-#             'user_id': p.user_id,
-#             'PRG': p.PRG,
-#             'PL': p.PL,
-#             'PR': p.PR,
-#             'SK': p.SK,
-#             'TS': p.TS,
-#             'M11': p.M11,
-#             'BD2': p.BD2,
-#             'Age': p.Age,
-#             'Insurance': p.Insurance,
-#             'prediction': int.from_bytes(p.prediction, byteorder='little'),
-#             'probability': p.probability
-#         })
+    # Récupère toutes les prédictions de la collection 'predictions'
+    predictions_cursor = db.predictions.find()
     
-#     ages = [p['Age'] for p in formatted_predictions]
+    # Transforme le curseur en liste de dictionnaires
+    predictions = list(predictions_cursor)
 
-
-#     return render_template('prediction_analysis.html', predictions=formatted_predictions , ages=ages)
-
-# ########################################################################################################################
-
-# @app.route('/medecin/upload', methods=['GET', 'POST'])
-# @login_required
-# @medecin_required
-# def medecin_upload():
-#     if request.method == 'POST':
-#         file = request.files['file']
-#         # Read it as a pandas DataFrame:
-#         import pandas as pd
-#         import io
-#         file_stream = io.StringIO(file.read().decode('utf-8'))
-#         df = pd.read_csv(file_stream, delimiter=';')
-#         results = ""
-        
-#         for i in range(len(df)):
-        
-#             input_values = [df["PRG"][i], df["PL"][i], df["PR"][i], df["SK"][i], df["TS"][i], df["M11"][i], df["BD2"][i], df["Age"][i], df["Insurance"][i]]
-#             user_display = int(df["ID"][i])
-#             prediction = model.predict([input_values])[0]
-#             probabilities = model.predict_proba([input_values])[0]
-#             probability = round(probabilities[prediction] * 100, 2) 
-#             # Enregistrer la prédiction dans la base de données
-#             new_prediction = Prediction(
-#                 user_id=user_display,
-#                 PRG=df["PRG"][i],
-#                 PL=df["PL"][i],
-#                 PR=df["PR"][i],
-#                 SK=df["SK"][i],
-#                 TS=df["TS"][i],
-#                 M11=df["M11"][i],
-#                 BD2=df["BD2"][i],
-#                 Age=df["Age"][i],
-#                 Insurance=df["Insurance"][i],
-#                 prediction=prediction,
-#                 probability=probability
-#             )
-
-#             db.session.add(new_prediction)
-#             db.session.commit()
-            
-#             header = '''<!doctype html>
-#             <html lang="en">
-#             <head>
-#                 <meta charset="utf-8">
-#                 <title>Résultat de la prédiction</title>
-#                 <link rel="stylesheet" href="{{ url_for('static', filename='css/style_result.css') }}">
-#             </head>
-#             <body>
-#                 <h1>Résultat de la prédiction</h1>'''
-            
-#             footer = '''
-#                 <a href="/medecin/upload">Retour</a>
-#             </body>
-#             </html>'''
-            
-#             results+=f'''<p>La prédiction du modèle pour le patient {user_display} est {prediction}, avec une probabilité associée de {probability}.<p>'''
-
-#         return header + results + footer
+    # Convertit les données numpy en données python standard
+    for p in predictions:
+        for key, value in p.items():
+            if isinstance(value, np.int64):
+                p[key] = int(value)
+                
+    # Formatage des prédictions
+    formatted_predictions = [{
+        'id': str(p['_id']),
+        'user_id': p['user_id'],
+        'PRG': p['PRG'],
+        'PL': p['PL'],
+        'PR': p['PR'],
+        'SK': p['SK'],
+        'TS': p['TS'],
+        'M11': p['M11'],
+        'BD2': p['BD2'],
+        'Age': p['Age'],
+        'Insurance': p['Insurance'],
+        'prediction': p['prediction'],
+        'probability': p['probability']
+    } for p in predictions]
     
-#     else:
-#         return '''
-#         <!doctype html>
-#         <html>
-#         <head>
-#         <title>Upload your data file</title>
-#         </head>
-#         <body>
-#         <h1>Upload your data file</h1>
-#         <form method=post enctype=multipart/form-data>
-#           <input type=file name=file>
-#           <input type=submit value=Upload>
-#         </form>
-#         </body>
-#         </html>
-#         '''
+    ages = [p['Age'] for p in formatted_predictions]
 
-# ########################################################################################################################
+    return render_template('prediction_analysis.html', predictions=formatted_predictions, ages=ages)
+
+
+
+@app.route('/medecin/upload', methods=['GET', 'POST'])
+@login_required
+@medecin_required
+def medecin_upload():
+    if request.method == 'POST':
+        file = request.files['file']
+        # Read it as a pandas DataFrame:
+        import pandas as pd
+        import io
+        file_stream = io.StringIO(file.read().decode('utf-8'))
+        df = pd.read_csv(file_stream)
+        predictions = []
+
+        for i in range(len(df)):
+            input_values = [df["PRG"][i], df["PL"][i], df["PR"][i], df["SK"][i], df["TS"][i], df["M11"][i], df["BD2"][i], df["Age"][i], df["Insurance"][i]]
+            user_display = int(df["ID"][i])
+            prediction = model.predict([input_values])[0]
+            probabilities = model.predict_proba([input_values])[0]
+            probability = round(probabilities[prediction] * 100, 2)
+
+            # Créer une nouvelle prédiction
+            new_prediction = {
+                'PRG': int(df["PRG"][i]),  # Conversion en entier standard
+                'PL': int(df["PL"][i]),  # Conversion en entier standard
+                'PR': int(df["PR"][i]),  # Conversion en entier standard
+                'SK': int(df["SK"][i]),  # Conversion en entier standard
+                'TS': int(df["TS"][i]),  # Conversion en entier standard
+                'M11': int(df["M11"][i]),  # Conversion en entier standard
+                'BD2': int(df["BD2"][i]),  # Conversion en entier standard
+                'Age': int(df["Age"][i]),  # Conversion en entier standard
+                'Insurance': int(df["Insurance"][i]),  # Conversion en entier standard
+                'prediction': int(prediction),
+                'probability': float(probability)
+            }
+
+            predictions.append(new_prediction)
+
+        # Insérer toutes les nouvelles prédictions dans la base de données MongoDB
+        db.predictions.insert_many(predictions)
+
+        return render_template('medecin_multi_results.html', predictions=predictions)
+
+    else:
+        return render_template('medecin_upload.html')
+
+
 
 
 # class Prediction(db.Model):
@@ -371,11 +392,6 @@ def predict():
         'probability': probability
     }
 
-    def convert_numpy_int64(document):
-        for key, value in document.items():
-            if isinstance(value, np.int64):
-                document[key] = value.item()
-        return document
 
     new_prediction = convert_numpy_int64(new_prediction)
     db.predictions.insert_one(new_prediction)
