@@ -138,6 +138,8 @@ def register():
             new_user = {'username': username, 'password': hashed_password, 'role': role , 'doctor_name' : doctor_name , 'email' :  email , 'first_name' : first_name , 'last_name' : last_name}
         elif role == 'médecin' :
             new_user = {'username': username, 'password': hashed_password, 'role': role , 'email' :  email , 'first_name' : first_name , 'last_name' : last_name}
+        elif role == 'admin' :
+            new_user = {'username': username, 'password': hashed_password, 'role': role}
 
         db.users.insert_one(new_user)
         flash("Inscription réussie ! Veuillez vous connecter.", 'success')

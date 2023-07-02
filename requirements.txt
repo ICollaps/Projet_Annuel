@@ -5,4 +5,4 @@ joblib
 pandas
 pymongo
 FLAML
-
+scikit-learn == 1.2.2
