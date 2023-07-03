@@ -1,6 +1,9 @@
 from tokenize import String
 from flask import Flask, redirect, url_for, render_template , request , flash , Blueprint , abort
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 import numpy as np
 import pandas as pd
 import io
@@ -391,10 +394,53 @@ def predict():
         'prediction': prediction,
         'probability': probability
     }
+    def send_email(subject, message, from_addr, to_addr, password):
+        # Create a multipart message
+        message_body = MIMEMultipart("alternative")
+        message_body["Subject"] = subject
+        message_body["From"] = from_addr
+        message_body["To"] = to_addr
+
+        # Create HTML version of your message
+        html_message = f"""
+        <html>
+        <body>
+            <p>Hi,</p>
+            <p>{message}</p>
+            <p>Regards,<br/>
+            Your Name</p>
+        </body>
+        </html>
+        """
+
+        # Convert them to MIMEText objects
+        part = MIMEText(html_message, "html")
+
+        # Add HTML part to MIMEMultipart message
+        # The email client will try to render the last part first
+        message_body.attach(part)
+
+        # Use Gmail's SMTP server to send message
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(from_addr, password)
+        server.send_message(message_body)
+        server.quit()
 
 
     new_prediction = convert_numpy_int64(new_prediction)
     db.predictions.insert_one(new_prediction)
+
+      # Retrieve the user's email from the database and the from adress
+    user_email = db.users.find_one({'_id': ObjectId(current_user.get_id())})['email']
+    from_addr="annual.project.esgi@gmail.com"
+    password = "hnnsrzdbpzdvypwy"
+    # Create the email message
+    subject = "New Health Prediction"
+    message = f"A new health prediction has been made for your account. The prediction is {prediction} with a probability of {probability}."
+    
+    # Send the email
+    send_email(subject, message, from_addr, user_email, password)
 
     return render_template('prediction_result.html', prediction=prediction, probability=probability, variables=variables)
 
