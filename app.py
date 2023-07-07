@@ -16,8 +16,7 @@ from pymongo import MongoClient
 from bson import ObjectId
 from bson.json_util import dumps
 
-from plotly import graph_objs as go
-import plotly.offline as pyo
+
 
 
 def admin_required(f):
