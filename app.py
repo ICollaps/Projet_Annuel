@@ -1,5 +1,5 @@
 from tokenize import String
-from flask import Flask, redirect, url_for, render_template , request , flash , Blueprint , abort
+from flask import Flask, redirect, url_for, render_template , request , flash , Blueprint , abort, make_response
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -7,6 +7,7 @@ import smtplib
 import numpy as np
 import pandas as pd
 import io
+import csv
 
 from werkzeug.security import generate_password_hash, check_password_hash
 import joblib
@@ -14,6 +15,9 @@ from functools import wraps
 from pymongo import MongoClient
 from bson import ObjectId
 from bson.json_util import dumps
+
+from plotly import graph_objs as go
+import plotly.offline as pyo
 
 
 def admin_required(f):
@@ -240,7 +244,6 @@ def medecin():
 @login_required
 @medecin_required
 def medecin_predictions():
-    
     # Récupère toutes les prédictions de la collection 'predictions'
     predictions_cursor = db.predictions.find()
     
@@ -252,7 +255,11 @@ def medecin_predictions():
         for key, value in p.items():
             if isinstance(value, np.int64):
                 p[key] = int(value)
-                
+
+    # Count number of patients with prediction 1 and 0
+    pred_counts = [p['prediction'] for p in predictions]
+    counts = [pred_counts.count(x) for x in set(pred_counts)]
+
     # Formatage des prédictions
     formatted_predictions = [{
         'id': str(p['_id']),
@@ -269,10 +276,10 @@ def medecin_predictions():
         'prediction': p['prediction'],
         'probability': p['probability']
     } for p in predictions]
-    
+
     ages = [p['Age'] for p in formatted_predictions]
 
-    return render_template('prediction_analysis.html', predictions=formatted_predictions, ages=ages)
+    return render_template('prediction_analysis.html', predictions=formatted_predictions, ages=ages, prediction_counts=counts)
 
 
 
@@ -396,39 +403,60 @@ def predict():
         'prediction': prediction,
         'probability': probability
     }
-    def send_email(subject, message, from_addr, to_addr, password):
+
+    def generate_html_table(variables):
+        # Start of the table
+        table = "<table>"
+
+        # Column headers
+        table += "<tr><th>Variable</th><th>Value</th><th>Description</th></tr>"
+
+        # Add a row for each variable
+        for var in variables:
+            table += f"<tr><td>{var['name']}</td><td>{var['value']}</td><td>{var['description']}</td></tr>"
+
+        # End of the table
+        table += "</table>"
+
+        return table
+
+    def send_email(subject, message, from_addr, to_addr, password, variables):
         # Create a multipart message
         message_body = MIMEMultipart("alternative")
         message_body["Subject"] = subject
         message_body["From"] = from_addr
         message_body["To"] = to_addr
 
-        # Create HTML version of your message
+        # Convert the message to HTML
         html_message = f"""
         <html>
         <body>
-            <p>Hi,</p>
             <p>{message}</p>
-            <p>Regards,<br/>
-            Your Name</p>
+            {generate_html_table(variables)}
+            <p>
+            The model prediction was carried out using top-notch algorithms and industry-standard practices. We assure you of the reliability of these results, as they have undergone rigorous testing and validation procedures.<br><br>
+            Should you have any queries or require further information, please feel free to contact us at any time.<br><br>
+            Your understanding and cooperation is greatly appreciated.<br><br>
+            Best regards,
+            </p>
         </body>
         </html>
         """
 
-        # Convert them to MIMEText objects
-        part = MIMEText(html_message, "html")
-
-        # Add HTML part to MIMEMultipart message
+        # Add HTML/plain-text parts to MIMEMultipart message
         # The email client will try to render the last part first
-        message_body.attach(part)
+        part1 = MIMEText(message, "plain")
+        part2 = MIMEText(html_message, "html")
+        message_body.attach(part1)
+        message_body.attach(part2)
 
-        # Use Gmail's SMTP server to send message
+        # Sending the mail
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(from_addr, password)
-        server.send_message(message_body)
+        text = message_body.as_string()
+        server.sendmail(from_addr, to_addr, text)
         server.quit()
-
 
     new_prediction = convert_numpy_int64(new_prediction)
     db.predictions.insert_one(new_prediction)
@@ -442,11 +470,33 @@ def predict():
     message = f"A new health prediction has been made for your account. The prediction is {prediction} with a probability of {probability}."
     
     # Send the email
-    send_email(subject, message, from_addr, user_email, password)
+    send_email(subject, message, from_addr, user_email, password, variables)
+
 
     return render_template('prediction_result.html', prediction=prediction, probability=probability, variables=variables)
 
+@app.route('/medecin/predictions/export')
+@login_required
+@medecin_required
+def export_predictions():
+    # Fetch predictions from database
+    predictions_cursor = db.predictions.find()
+    predictions = list(predictions_cursor)
 
+    # Prepares data and column names
+    data = [{k: v if not isinstance(v, np.int64) else int(v) for k, v in d.items()} for d in predictions]
+    column_names = data[0].keys()
+
+    si = io.StringIO()
+    cw = csv.writer(si)
+    cw.writerow(column_names)  # Write column names
+    cw.writerows([list(d.values()) for d in data])  # Write data
+
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=predictions_export.csv"
+    output.headers["Content-type"] = "text/csv"
+
+    return output
 
 if __name__ == '__main__':
     

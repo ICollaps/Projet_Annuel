@@ -28,3 +28,28 @@ function createAgeDistributionChart(ages) {
     const chart = echarts.init(document.getElementById('age-distribution-chart'));
     chart.setOption(option);
 }
+
+function createPredictionChart(predictionCounts) {
+    let chartDom = document.getElementById('prediction-chart');
+    let myChart = echarts.init(chartDom);
+    let option;
+
+    option = {
+        title: {
+            text: 'Distribution of Predictions'
+        },
+        tooltip: {},
+        xAxis: {
+            data: ["0", "1"],
+            show: false,  // Add this line
+        },
+        yAxis: {},
+        series: [{
+            name: 'Count',
+            type: 'pie',
+            data: predictionCounts
+        }]
+    };
+
+    option && myChart.setOption(option);
+}
