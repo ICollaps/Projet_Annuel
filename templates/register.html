@@ -60,7 +60,7 @@
       <label for="doctor_name_select" id="doctor_name_select_label" style="display: none;">Nom du médecin:</label>
       <select name="doctor_name_select" id="doctor_name_select" style="display: none;">
         {% for doctor in doctors %}
-        <option value="{{ doctor.username }}">{{ doctor.last_name }} {{ doctor.first_name }}</option>
+        <option value="{{ doctor.email }}">{{ doctor.last_name }} {{ doctor.first_name }}</option>
         {% endfor %}
       </select><br>
 
