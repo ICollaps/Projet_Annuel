@@ -2,8 +2,18 @@
 <html>
 <head>
 <title>Upload your data file</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style_medecin_upload.css') }}">
 </head>
 <body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+{% endwith %}
+
 <h1>Upload your data file</h1>
 <form method=post enctype=multipart/form-data>
   <input type=file name=file>

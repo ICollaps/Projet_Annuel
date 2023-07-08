@@ -81,6 +81,20 @@ def convert_numpy_int64(document):
         return document
 
 
+def validate_input(data):
+    """
+    Cette fonction valide les données entrées par l'utilisateur.
+    Elle retourne True si toutes les données sont valides, sinon elle retourne False.
+    """
+    for value in data:
+        # Vérifier si la valeur est numérique
+        if not isinstance(value, (int, float)):
+            return False
+        # Vérifier si la valeur est non négative
+        if value < 0:
+            return False
+        
+    return True
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -293,10 +307,30 @@ def medecin_upload():
         import io
         file_stream = io.StringIO(file.read().decode('utf-8'))
         df = pd.read_csv(file_stream)
+
+
+        # Check if the DataFrame has the right columns
+        expected_columns = ['ID', 'PRG', 'PL', 'PR', 'SK', 'TS', 'M11', 'BD2', 'Age', 'Insurance']
+        if list(df.columns) != expected_columns:
+            flash( 'Le format du fichier est invalide. Veuillez vous assurer que les colonnes sont : ' + ', '.join(expected_columns) , 'danger')
+            return redirect(url_for('medecin_upload'))
+        
+        
         predictions = []
 
         for i in range(len(df)):
+
+            
+
             input_values = [df["PRG"][i], df["PL"][i], df["PR"][i], df["SK"][i], df["TS"][i], df["M11"][i], df["BD2"][i], df["Age"][i], df["Insurance"][i]]
+            
+            # Valider les données
+            if not validate_input(input_values):
+                flash('Invalid data.', 'error')
+                return redirect(url_for('medecin_upload'))
+
+        
+    
             user_display = int(df["ID"][i])
             prediction = model.predict([input_values])[0]
             probabilities = model.predict_proba([input_values])[0]
@@ -330,23 +364,6 @@ def medecin_upload():
 
 
 
-# class Prediction(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     PRG = db.Column(db.Float, nullable=False)
-#     PL = db.Column(db.Float, nullable=False)
-#     PR = db.Column(db.Float, nullable=False)
-#     SK = db.Column(db.Float, nullable=False)
-#     TS = db.Column(db.Float, nullable=False)
-#     M11 = db.Column(db.Float, nullable=False)
-#     BD2 = db.Column(db.Float, nullable=False)
-#     Age = db.Column(db.Float, nullable=False)
-#     Insurance = db.Column(db.Float, nullable=False)
-#     prediction = db.Column(db.Integer, nullable=False)
-#     probability = db.Column(db.Float, nullable=False)
-
-#     user = db.relationship('User', backref=db.backref('predictions', lazy=True))
-
 
 
 
@@ -370,6 +387,11 @@ def predict():
     Insurance = float(request.form['Insurance'])
 
     input_values = [PRG, PL, PR, SK, TS, M11, BD2, Age, Insurance]
+
+    # Valider les données
+    if not validate_input(input_values):
+        flash('Invalid data.', 'error')
+        return redirect(url_for('health'))
 
     prediction = model.predict([input_values])[0]
     probabilities = model.predict_proba([input_values])[0]
