@@ -9,21 +9,21 @@
     <h1>Menu Médecin</h1>
     <nav>
       <ul>
-        <li><a href="{{ url_for('medecin_upload') }}">Médecin multi patients</a></li>
+        <li><a href="{{ url_for('medecin_bp.medecin_upload') }}">Médecin multi patients</a></li>
       </ul>
     </nav>
     <nav>
       <ul>
-        <li><a href="{{ url_for('medecin_predictions') }}">Voir les prédictions</a></li>
+        <li><a href="{{ url_for('medecin_bp.medecin_predictions') }}">Voir les prédictions</a></li>
       </ul>
     </nav>
     <nav>
       <ul>
-        <li><a href="{{ url_for('health') }}">Formulaire</a></li>
+        <li><a href="{{ url_for('medecin_bp.med_form') }}">Formulaire</a></li>
       </ul>
     </nav>
     <p>
-      <a href="{{ url_for('logout') }}">Se déconnecter</a>
+      <a href="{{ url_for('login_bp.logout') }}">Se déconnecter</a>
     </p>
   </body>
 </html>

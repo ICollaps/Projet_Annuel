@@ -9,7 +9,7 @@
     {% if current_user.is_authenticated %}
       <p>Bonjour, {{ current_user.username }}!</p>
       <a href="{{ url_for('menu') }}" class="button">Accéder au menu</a><br>
-      <a href="{{ url_for('logout') }}">Se déconnecter</a>
+      <a href="{{ url_for('login_bp.logout') }}">Se déconnecter</a>
     {% else %}
       <h1>Login</h1>
       
@@ -31,7 +31,7 @@
         <button type="submit">Se connecter</button>
       </form>
       <br>
-      <a href="{{ url_for('register') }}">Pas encore inscrit ? Inscrivez-vous ici</a>
+      <a href="{{ url_for('login_bp.register') }}">Pas encore inscrit ? Inscrivez-vous ici</a>
     {% endif %}
     <!-- Autres éléments du fichier login.html -->
 

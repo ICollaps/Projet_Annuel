@@ -13,8 +13,7 @@
     <h1>Liste des prédictions</h1>
     <table>
         <tr>
-            <th>ID</th>
-            <th>User ID</th>
+            <th>Name</th>
             <th>PRG</th>
             <th>PL</th>
             <th>PR</th>
@@ -29,8 +28,7 @@
         </tr>
         {% for prediction in predictions %}
             <tr>
-                <td>{{ prediction.id }}</td>
-                <td>{{ prediction.user_id }}</td>
+                <td>{{ prediction.name }}</td>
                 <td>{{ prediction.PRG }}</td>
                 <td>{{ prediction.PL }}</td>
                 <td>{{ prediction.PR }}</td>
@@ -45,7 +43,7 @@
             </tr>
         {% endfor %}
     </table>
-    <a href="{{ url_for('export_predictions') }}" class="btn btn-primary">Export to CSV</a>
+    <a href="{{ url_for('medecin_bp.export_predictions') }}" class="btn btn-primary">Export to CSV</a>
     <div id="age-distribution-chart" style="width: 100%; height: 400px;">coucou</div>
     <div id="prediction-chart" style="width: 100%; height: 400px;"></div>
     <p>
