@@ -66,6 +66,9 @@ class UserObj:
 
 @login_manager.user_loader
 def load_user(user_id):
+    if not is_db_up():
+        raise Exception('Database error') # Lève une exception si la base de données est en panne
+
     user = db.users.find_one({'_id': ObjectId(user_id)})
     if user:
         return UserObj(user)
@@ -96,6 +99,19 @@ def validate_input(data):
         
     return True
 
+
+def is_db_up():
+    try:
+        client.server_info() # Envoie une requête à la base de données
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    
+
+@app.errorhandler(Exception)
+def handle_db_error(e):
+    return render_template('error.html'), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
