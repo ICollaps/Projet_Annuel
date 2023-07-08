@@ -159,7 +159,7 @@ def medecin_upload():
 
 
         # Check if the DataFrame has the right columns
-        expected_columns = ['ID', 'PRG', 'PL', 'PR', 'SK', 'TS', 'M11', 'BD2', 'Age', 'Insurance']
+        expected_columns = ['ID', 'PRG', 'PL', 'PR', 'SK', 'TS', 'M11', 'BD2', 'Age', 'Insurance' , 'Name']
         if list(df.columns) != expected_columns:
             flash( 'Le format du fichier est invalide. Veuillez vous assurer que les colonnes sont : ' + ', '.join(expected_columns) , 'danger')
             return redirect(url_for('medecin_bp.medecin_upload'))
@@ -175,8 +175,10 @@ def medecin_upload():
             
             # Valider les données
             if not validate_input(input_values):
-                flash('Invalid data.', 'error')
+                flash('Invalid data.', 'danger')
                 return redirect(url_for('medecin_bp.medecin_upload'))
+            
+            
 
         
     
@@ -184,6 +186,7 @@ def medecin_upload():
             prediction = model.predict([input_values])[0]
             probabilities = model.predict_proba([input_values])[0]
             probability = round(probabilities[prediction] * 100, 2)
+            name = df["Name"][i]
 
             # Créer une nouvelle prédiction
             new_prediction = {
@@ -197,7 +200,8 @@ def medecin_upload():
                 'Age': int(df["Age"][i]),  # Conversion en entier standard
                 'Insurance': int(df["Insurance"][i]),  # Conversion en entier standard
                 'prediction': int(prediction),
-                'probability': float(probability)
+                'probability': float(probability),
+                'name' : str(name)
             }
 
             predictions.append(new_prediction)

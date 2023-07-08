@@ -13,7 +13,7 @@ def validate_input(data):
     """
     for value in data:
         # Vérifier si la valeur est numérique
-        if not isinstance(value, (int, float)):
+        if not np.issubdtype(type(value), np.number):
             return False
         # Vérifier si la valeur est non négative
         if value < 0:
