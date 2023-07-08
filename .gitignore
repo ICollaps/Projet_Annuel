@@ -1,3 +1,5 @@
 env/
 pa_env/
 model/*.log
+*.pyc
+
