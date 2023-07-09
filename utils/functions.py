@@ -45,14 +45,12 @@ def generate_html_table(variables):
 
         return table
 
-
-def send_email(subject, message, from_addr, to_addr, password, variables):
+def create_email(subject, message, from_addr, to_addr, variables):
         # Create a multipart message
         message_body = MIMEMultipart("alternative")
         message_body["Subject"] = subject
         message_body["From"] = from_addr
         message_body["To"] = to_addr
-
         # Convert the message to HTML
         html_message = f"""
         <html>
@@ -74,15 +72,19 @@ def send_email(subject, message, from_addr, to_addr, password, variables):
         part1 = MIMEText(message, "plain")
         part2 = MIMEText(html_message, "html")
         message_body.attach(part1)
-        message_body.attach(part2)
+        message_body.attach(part2)    
+        return message_body
 
-        # Sending the mail
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(from_addr, password)
-        text = message_body.as_string()
-        server.sendmail(from_addr, to_addr, text)
-        server.quit()
+def send_email(subject, message, from_addr, to_addr, password, variables):
+    message_body = create_email(subject, message, from_addr, to_addr, variables)
+    
+    # Sending the mail
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(from_addr, password)
+    text = message_body.as_string()
+    server.sendmail(from_addr, to_addr, text)
+    server.quit()
 
 
 def is_db_up():
