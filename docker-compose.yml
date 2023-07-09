@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    # image: annual_proj_img
+    command: flask run --host=0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - MONGO_URI=mongodb://db:27017/Annual_Project
+  db:
+    image: mongo:latest
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+volumes:
+  mongodb_data: {}
