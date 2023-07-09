@@ -11,30 +11,29 @@
       <a href="{{ url_for('menu') }}" class="button">Accéder au menu</a><br>
       <a href="{{ url_for('login_bp.logout') }}">Se déconnecter</a>
     {% else %}
-      <h1>Login</h1>
-      
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-      
-      <form action="/login" method="post">
-        <label for="username">Nom d'utilisateur:</label>
-        <input type="text" name="username" required><br>
-  
-        <label for="password">Mot de passe:</label>
-        <input type="password" name="password" required><br>
-  
-        <button type="submit">Se connecter</button>
-      </form>
-      <br>
-      <a href="{{ url_for('login_bp.register') }}">Pas encore inscrit ? Inscrivez-vous ici</a>
+      <div class="container">
+        <h1>Login</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        <form action="/login" method="post">
+          <label for="username">Nom d'utilisateur:</label>
+          <input type="text" name="username" required><br>
+
+          <label for="password">Mot de passe:</label>
+          <input type="password" name="password" required><br>
+
+          <button type="submit">Se connecter</button>
+        </form>
+        <br>
+        <a class="url_for_register" href="{{ url_for('login_bp.register') }}">Pas encore inscrit ? Inscrivez-vous ici</a>
+      </div>
     {% endif %}
-    <!-- Autres éléments du fichier login.html -->
-
-
   </body>
 </html>

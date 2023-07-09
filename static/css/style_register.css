@@ -7,26 +7,40 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-  }
+}
 
-  h1 {
+h1 {
     text-align: center;
     margin-bottom: 30px;
     font-size: 2rem;
     color: #333;
-  }
+}
 
-  form {
+form {
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
+}
 
-  input[type="file"] {
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     margin-bottom: 20px;
-  }
+}
 
-  input[type="submit"] {
+button[type="submit"] {
     padding: 10px 20px;
     background-color: rgba(255, 255, 255, 0.658);
     color: #000000;
@@ -34,9 +48,25 @@ body {
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
-  }
+}
 
-  input[type="submit"]:hover {
+button[type="submit"]:hover {
     background-color: #000000;
     color: #fff;
-  }
+}
+
+.alert {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
