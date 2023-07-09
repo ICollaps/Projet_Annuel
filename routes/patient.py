@@ -43,6 +43,11 @@ def predict():
     probabilities = model.predict_proba([input_values])[0]
     probability = round(probabilities[prediction] * 100, 2)
 
+    if prediction == 0 :
+        prediction = 'négatif'
+    else:
+        prediction = 'positif'
+
     variables = [
         {'name': 'PRG', 'value': PRG, 'description': 'Description pour PRG'},
         {'name': 'PL', 'value': PL, 'description': 'Description pour PL'},

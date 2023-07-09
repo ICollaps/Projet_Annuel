@@ -46,7 +46,7 @@
             <thead>
                 <tr>
                     <th></th> <!-- Colonne pour les checkboxes -->
-                    <th>ID</th>
+                    <th>Name</th>
                     <th>Prediction</th>
                     <th>Probability</th>
                 </tr>
@@ -55,7 +55,7 @@
                 {% for prediction in predictions %}
                     <tr>
                         <td><input type="checkbox" name="prediction_ids" value="{{ prediction._id }}"></td> <!-- Checkbox pour chaque ligne -->
-                        <td>{{ prediction._id}}</td>
+                        <td>{{ prediction.name}}</td>
                         <td>{{ prediction.prediction }}</td>
                         <td>{{ prediction.probability }}</td>
                     </tr>

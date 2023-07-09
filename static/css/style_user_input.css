@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: Arial, sans-serif;
   background-color: #242424;
   display: flex;
@@ -7,39 +7,38 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-}
+} */
 
-h1 {
+/* h1 {
   text-align: center;
   margin-bottom: 30px;
   font-size: 2rem;
   color: #333;
-}
+} */
 
-form {
+/* form {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 
-label {
+/* label {
   display: block;
   margin-bottom: 10px;
   font-weight: bold;
-}
+} */
 
-.input-wrapper {
+/* .input-wrapper {
   position: relative;
   display: inline-block;
-}
+} */
 
 input[type="number"] {
   width: 200px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 20px;
 }
 
 .input-wrapper i {
