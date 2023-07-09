@@ -6,12 +6,12 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style_welcome.css') }}">
   </head>
   <body>
-    <h1>Bienvenue sur notre application</h1>
-    <p>
-      <a href="{{ url_for('login') }}">Se connecter</a>
-    </p>
-    <p>
-      <a href="{{ url_for('register') }}">S'inscrire</a>
-    </p>
+    <div class="container">
+      <h1>Bienvenue sur notre application</h1>
+      <div class="buttons">
+        <a class="btn" href="{{ url_for('login') }}">Se connecter</a>
+        <a class="btn" href="{{ url_for('register') }}">S'inscrire</a>
+      </div>
+    </div>
   </body>
 </html>
