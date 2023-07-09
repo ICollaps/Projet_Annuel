@@ -83,8 +83,8 @@ def predict():
     from_addr="annual.project.esgi@gmail.com"
     password = "hnnsrzdbpzdvypwy"
     # Create the email message
-    subject = "New Health Prediction"
-    message = f"A new health prediction has been made for your account. The prediction is {prediction} with a probability of {probability}."
+    subject = "Nouvelle Prédiction de santé"
+    message = f"Une nouvelle prédiction de santé a été réalisée pour votre compte. La prédiction est {prediction} avec une probabilité de {probability}."
     
     # Send the email
     send_email(subject, message, from_addr, user_email, password, variables)

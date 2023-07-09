@@ -58,10 +58,10 @@ def create_email(subject, message, from_addr, to_addr, variables):
             <p>{message}</p>
             {generate_html_table(variables)}
             <p>
-            The model prediction was carried out using top-notch algorithms and industry-standard practices. We assure you of the reliability of these results, as they have undergone rigorous testing and validation procedures.<br><br>
-            Should you have any queries or require further information, please feel free to contact us at any time.<br><br>
-            Your understanding and cooperation is greatly appreciated.<br><br>
-            Best regards,
+            La prédiction du modèle a été effectuée en utilisant des algorithmes de pointe et des pratiques standard de l'industrie. Nous vous assurons de la fiabilité de ces résultats, car ils ont subi des procédures de test et de validation rigoureuses.<br><br>
+            Si vous avez des questions ou si vous avez besoin de plus d'informations, n'hésitez pas à nous contacter à tout moment.<br><br>
+            Votre compréhension et votre coopération sont grandement appréciées.<br><br>
+            Meilleures salutations,
             </p>
         </body>
         </html>
