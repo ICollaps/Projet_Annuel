@@ -6,6 +6,7 @@ services:
     command: flask run --host=0.0.0.0
     volumes:
       - .:/app
+    network_mode: host
     ports:
       - "5000:5000"
     depends_on:
@@ -16,6 +17,7 @@ services:
     image: mongo:latest
     volumes:
       - mongodb_data:/data/db
+    network_mode: host
     ports:
       - "27017:27017"
 volumes:
