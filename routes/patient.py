@@ -25,7 +25,6 @@ def health():
 
 @patient_bp.route('/health/predict', methods=['POST'])
 @login_required
-@patient_required
 def predict():
     PRG = float(request.form['PRG'])
     PL = float(request.form['PL'])
