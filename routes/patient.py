@@ -84,7 +84,7 @@ def predict():
     db.predictions.insert_one(new_prediction)
 
       # Retrieve the user's email from the database and the from adress
-    user_email = db.users.find_one({'_id': ObjectId(current_user.get_id())})['doctor_name']
+    user_email = db.users.find_one({'_id': ObjectId(current_user.get_id())})['email']
     from_addr="annual.project.esgi@gmail.com"
     password = "hnnsrzdbpzdvypwy"
     # Create the email message

@@ -1,58 +1,59 @@
 {% extends "base.html" %}
 
+{% block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_pred_analysis.css') }}">
+<script src="{{ url_for('static', filename='js/prediction_analysis.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_pred_analysis.css') }}">
-    <script src="{{ url_for('static', filename='js/prediction_analysis.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
-    <title>Liste des prédictions</title>
-    <!-- Ajoutez ici le lien vers votre fichier CSS si nécessaire -->
-</head>
-<body>
-    <h1>Liste des prédictions</h1>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>PRG</th>
-            <th>PL</th>
-            <th>PR</th>
-            <th>SK</th>
-            <th>TS</th>
-            <th>M11</th>
-            <th>BD2</th>
-            <th>Age</th>
-            <th>Insurance</th>
-            <th>Prédiction</th>
-            <th>Probabilité</th>
-        </tr>
-        {% for prediction in predictions %}
-            <tr>
-                <td>{{ prediction.name }}</td>
-                <td>{{ prediction.PRG }}</td>
-                <td>{{ prediction.PL }}</td>
-                <td>{{ prediction.PR }}</td>
-                <td>{{ prediction.SK }}</td>
-                <td>{{ prediction.TS }}</td>
-                <td>{{ prediction.M11 }}</td>
-                <td>{{ prediction.BD2 }}</td>
-                <td>{{ prediction.Age }}</td>
-                <td>{{ prediction.Insurance }}</td>
-                <td>{{ prediction.prediction }}</td>
-                <td>{{ prediction.probability }}%</td>
-            </tr>
-        {% endfor %}
-    </table>
-    <a href="{{ url_for('medecin_bp.export_predictions') }}" class="btn btn-primary">Export to CSV</a>
-    <div id="age-distribution-chart" style="width: 100%; height: 400px;">coucou</div>
-    <div id="prediction-chart" style="width: 100%; height: 400px;"></div>
-    <p>
-        <a href="{{ url_for('menu') }}">Retour au menu</a>
-    </p>
+    <div class="center-container">
+        <h1>Liste des prédictions</h1>
+        <div class="graph-container">
+            <div id="age-distribution-chart" class="graph"></div>
+            <div id="prediction-chart" class="graph"></div>
+        </div>
+        
+        <div class="table-container">
+            
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>PRG</th>
+                    <th>PL</th>
+                    <th>PR</th>
+                    <th>SK</th>
+                    <th>TS</th>
+                    <th>M11</th>
+                    <th>BD2</th>
+                    <th>Age</th>
+                    <th>Insurance</th>
+                    <th>Prédiction</th>
+                    <th>Probabilité</th>
+                </tr>
+                {% for prediction in predictions %}
+                    <tr>
+                        <td>{{ prediction.name }}</td>
+                        <td>{{ prediction.PRG }}</td>
+                        <td>{{ prediction.PL }}</td>
+                        <td>{{ prediction.PR }}</td>
+                        <td>{{ prediction.SK }}</td>
+                        <td>{{ prediction.TS }}</td>
+                        <td>{{ prediction.M11 }}</td>
+                        <td>{{ prediction.BD2 }}</td>
+                        <td>{{ prediction.Age }}</td>
+                        <td>{{ prediction.Insurance }}</td>
+                        <td>{{ prediction.prediction }}</td>
+                        <td>{{ prediction.probability }}%</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="button-container">
+            <a href="{{ url_for('medecin_bp.export_predictions') }}" class="btn btn-primary mybouton">Export to CSV</a>
+            <a href="{{ url_for('menu') }}" class="btn btn-primary mybouton">Retour au menu</a>
+        </div>
+    </div>
 
     <script>
         let ages = {{ ages|tojson }};
@@ -60,7 +61,4 @@
         let predictionCounts = {{ prediction_counts|tojson }};
         createPredictionChart(predictionCounts);
     </script>
-</body>
-</html>
-
 {% endblock %}

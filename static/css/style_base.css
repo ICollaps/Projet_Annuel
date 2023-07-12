@@ -1,7 +1,6 @@
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-
 }
 
 h1 {
@@ -10,13 +9,10 @@ h1 {
     margin-bottom: 30px;
 }
 
-
-
 .vertical-nav {
     height: 100vh;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
 }
-
-
 
 .logo {
     width: 90%;
@@ -30,8 +26,6 @@ h1 {
     margin-bottom: 3vh;
     margin-top: 3vh;
 }
-
-
 
 .nav-icon {
     height: 40px; 
@@ -47,3 +41,12 @@ h1 {
     font-size: 15px;
 }
 
+.block-content {
+    margin: auto;
+    width: 50%; /* Vous pouvez ajuster ce pourcentage en fonction de la largeur souhaitée pour le contenu */
+}
+
+.row {
+    display: flex;
+    justify-content: flex-start; /* aligne les éléments au début du conteneur flex */
+}

@@ -5,66 +5,105 @@
     <title>Inscription</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style_register.css') }}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #f5f5f5;
+        font-family: 'Arial', sans-serif;
+      }
+      .container {
+        width: 60%;
+        /* max-width: 800px; */
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #ffffff;
+      }
+      .login-image {
+        position: relative;
+        background: url('{{ url_for('static', filename='img/img_register.jpg') }}') center/cover no-repeat;
+      }
+      .logo {
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        height: auto;
+      }
+      .register-form {
+        padding: 20px;
+      }
+      /* Ajoutez ici vos autres styles */
+    </style>
     <script>
       $(document).ready(function(){
       $('#role').change(function(){
         if($('#role').val() === 'patient') {
           $('#doctor_name_select_label').show();
           $('#doctor_name_select').show();
-          $('#doctor_name_label').hide();
-          $('#doctor_name').hide();
         } else {
           $('#doctor_name_select_label').hide();
           $('#doctor_name_select').hide();
-          $('#doctor_name_label').show();
-          $('#doctor_name').show();
         }
       });
     });
     </script>
   </head>
   <body>
-    <h1>Inscription</h1>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-    
-    <form action="/register" method="post">
-      <label for="username">Nom d'utilisateur:</label>
-      <input type="text" name="username" required><br>
+    <div class="container">
+      <div class="login-image">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo">
+      </div>
+      <div class="register-form">
+        <h1>Inscription</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        <form action="/register" method="post">
+          <label for="username">Nom d'utilisateur:</label>
+          <input type="text" name="username" required><br>
 
-      <label for="password">Mot de passe:</label>
-      <input type="password" name="password" required><br>
+          <label for="password">Mot de passe:</label>
+          <input type="password" name="password" required><br>
 
-      <label for="email">Adresse mail:</label>
-      <input type="email" name="email" required><br>
+          <label for="email">Adresse mail:</label>
+          <input type="email" name="email" required><br>
 
-      <label for="first_name">Prénom:</label>
-      <input type="first_name" name="first_name" required><br>
+          <label for="first_name">Prénom:</label>
+          <input type="first_name" name="first_name" required><br>
 
-      <label for="last_name">Nom de famille:</label>
-      <input type="last_name" name="last_name" required><br>
+          <label for="last_name">Nom de famille:</label>
+          <input type="last_name" name="last_name" required><br>
 
-      <label for="role">Role:</label>
-      <select name="role" id="role" required>
-        <option value="médecin">Médecin</option>
-        <option value="patient">Patient</option>
-        <option value="admin">Admin</option>
-      </select><br>
+          <label for="role">Role:</label>
+          <select name="role" id="role" required>
+            <option value="médecin">Médecin</option>
+            <option value="patient">Patient</option>
+            <option value="admin">Admin</option>
+          </select><br>
 
-      <label for="doctor_name_select" id="doctor_name_select_label" style="display: none;">Nom du médecin:</label>
-      <select name="doctor_name_select" id="doctor_name_select" style="display: none;">
-        {% for doctor in doctors %}
-        <option value="{{ doctor.email }}">{{ doctor.last_name }} {{ doctor.first_name }}</option>
-        {% endfor %}
-      </select><br>
+          <label for="doctor_name_select" id="doctor_name_select_label" style="display: none;">Nom du médecin:</label>
+          <select name="doctor_name_select" id="doctor_name_select" style="display: none;">
+            {% for doctor in doctors %}
+            <option value="{{ doctor.email }}">{{ doctor.last_name }} {{ doctor.first_name }}</option>
+            {% endfor %}
+          </select>
 
-      <button type="submit">S'inscrire</button>
-    </form>
+          <button type="submit">S'inscrire</button>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

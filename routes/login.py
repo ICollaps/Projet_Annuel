@@ -53,7 +53,7 @@ def login():
             #     return redirect(url_for('admin'))
             # else:
             #     return redirect(url_for('menu'))
-            redirect(url_for('menu'))
+            return redirect(url_for('menu'))
         else:
             flash("Nom d'utilisateur ou mot de passe incorrect", 'danger')
 

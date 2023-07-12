@@ -32,9 +32,7 @@ login_manager.login_view = 'login'
 def index():
     return render_template('welcome.html')
 
-@app.route('/base')
-def base():
-    return render_template('base.html')
+
 
 
 @app.route('/menu')

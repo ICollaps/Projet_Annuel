@@ -1,12 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style_admin.css') }}">
-    <title>Utilisateurs</title>
-</head>
-<body>
+{% extends 'base_admin.html' %}
+{% block custom_css %}
+<style>
+body {
+    font-family: Arial, sans-serif;
+    /* background-color: #f5f5f5; */
+}
+
+.scrollable-container {
+    
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2em;
+    padding: 2em;
+}
+
+.scrollable-table {
+    overflow-y: auto;
+    height: 60vh; /* Ajustez cette valeur en fonction de la hauteur que vous souhaitez pour le conteneur */
+    padding: 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    background-color: #fff; /* Une couleur de fond blanche pour le conteneur du tableau */
+    
+    
+}
+
+h1 {
+    color: #000000; /* Une couleur bleue douce pour les en-têtes */
+    font-size:xx-large;
+}
+
+h2 {
+    color: #106ba3; /* Une couleur bleue douce pour les en-têtes */
+    font-size:large;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #106ba3;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #f44336; /* Une couleur rouge pour les boutons de suppression */
+    color: white;
+    padding: 10px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    margin-top: 2%;
+    margin-bottom: 5%;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+}
+
+.alert {
+    padding: 20px;
+    background-color: #f44336; /* Rouge */
+    color: white;
+    margin-bottom: 15px;
+}
+
+.alert-success {
+    background-color: #4CAF50; /* Vert */
+}
+
+.alert-info {
+    background-color: #2196F3; /* Bleu */
+}
+
+.alert-warning {
+    background-color: #ff9800; /* Orange */
+}
+</style>
+{% endblock %}
+
+{% block content %}
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -14,56 +104,70 @@
       {% endfor %}
     {% endif %}
     {% endwith %}
-    <h1>Liste des utilisateurs</h1>
-    <form action="{{ url_for('admin_bp.delete_users') }}" method="POST">
-        <table>
-            <thead>
-                <tr>
-                    <th></th> <!-- Colonne pour les checkboxes -->
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
+    <h1>Pannel d'administration</h1>
+    <div class="scrollable-container">
+      <div>
+        
+        <div class="scrollable-table">
+            <h2>Liste des utilisateurs</h2>
+            
+            <button type="submit" class="btn-delete">Supprimer les utilisateurs sélectionnés</button>
+            
+            <form action="{{ url_for('admin_bp.delete_users') }}" method="POST">
+              <table>
+                <thead>
                     <tr>
-                        <td><input type="checkbox" name="user_ids" value="{{ user.id }}"></td> <!-- Checkbox pour chaque ligne -->
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.username }}</td>
-                        <td>****</td>
-                        <td>{{ user.role }}</td>
+                        <th></th> <!-- Colonne pour les checkboxes -->
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Role</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn-delete">Supprimer les utilisateurs sélectionnés</button> <!-- Bouton de suppression hors du tableau -->
-    </form>
-    <h1>Liste des prédictions</h1>
-    <form action="{{ url_for('admin_bp.delete_predictions') }}" method="POST">
-        <table>
-            <thead>
-                <tr>
-                    <th></th> <!-- Colonne pour les checkboxes -->
-                    <th>Name</th>
-                    <th>Prediction</th>
-                    <th>Probability</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for prediction in predictions %}
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td><input type="checkbox" name="user_ids" value="{{ user.id }}"></td> <!-- Checkbox pour chaque ligne -->
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>****</td>
+                            <td>{{ user.role }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </form>
+      </div>
+    </div>
+    <div>
+      
+      <div class="scrollable-table">
+        <h2>Liste des prédictions</h2>
+        <form action="{{ url_for('admin_bp.delete_predictions') }}" method="POST">
+            <button type="submit" class="btn-delete">Supprimer les prédictions sélectionnées</button>
+            <table>
+                <thead>
                     <tr>
-                        <td><input type="checkbox" name="prediction_ids" value="{{ prediction._id }}"></td> <!-- Checkbox pour chaque ligne -->
-                        <td>{{ prediction.name}}</td>
-                        <td>{{ prediction.prediction }}</td>
-                        <td>{{ prediction.probability }}</td>
+                        <th></th> <!-- Colonne pour les checkboxes -->
+                        <th>Name</th>
+                        <th>Prediction</th>
+                        <th>Probability</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn-delete">Supprimer les prédictions sélectionnées</button> <!-- Bouton de suppression hors du tableau -->
-    </form>
-</body>
-</html>
-
+                </thead>
+                <tbody>
+                    {% for prediction in predictions %}
+                        <tr>
+                            <td><input type="checkbox" name="prediction_ids" value="{{ prediction._id }}"></td> <!-- Checkbox pour chaque ligne -->
+                            <td>{{ prediction.name}}</td>
+                            <td>{{ prediction.prediction }}</td>
+                            <td>{{ prediction.probability }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

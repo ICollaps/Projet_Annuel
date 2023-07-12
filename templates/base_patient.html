@@ -31,21 +31,13 @@
                             </a>
                         </li>
             
+                        
                         <li class="nav-item">
-                            <a href="{{ url_for('medecin_bp.medecin_upload') }}" data-bs-toggle="collapse" class="nav-link px-sm-0 px-2 ">
-                                <img src="{{ url_for('static', filename='img/logo_multi.png') }}" alt="Multi icon" class="nav-icon">
-                                <i class="fs-5 bi-speedometer2"></i><span class="ms-1 d-none d-sm-inline text-secondary font-weight-bold mytext-size">Prédiction multiple</span> </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url_for('medecin_bp.med_form') }}" class="nav-link px-sm-0 px-2">
+                            <a href="{{ url_for('patient_bp.health') }}" class="nav-link px-sm-0 px-2">
                                 <img src="{{ url_for('static', filename='img/logo_predict.png') }}" alt="Predict icon" class="nav-icon">
-                                <i class="fs-5 bi-table"></i><span class="ms-1 d-none d-sm-inline text-secondary font-weight-bold mytext-size">Prédiction simple</span></a>
+                                <i class="fs-5 bi-table"></i><span class="ms-1 d-none d-sm-inline text-secondary font-weight-bold mytext-size">Prédiction</span></a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ url_for('medecin_bp.medecin_predictions') }}" class="nav-link px-sm-0 px-2">
-                                <img src="{{ url_for('static', filename='img/logo_history.png') }}" alt="History icon" class="nav-icon">
-                                <i class="fs-5 bi-table"></i><span class="ms-1 d-none d-sm-inline text-secondary font-weight-bold mytext-size">Historique</span></a>
-                        </li>
+                        
                     </ul>
                     <li class="nav-item">
                         <a href="{{ url_for('login_bp.logout') }}" class="nav-link px-sm-0 px-2">
