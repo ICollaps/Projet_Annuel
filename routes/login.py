@@ -48,7 +48,7 @@ def login():
         if user and check_password_hash(user['password'], password):
             user_obj = UserObj(user)
             login_user(user_obj)
-            flash('Vous êtes connecté avec succès !', 'success')
+            
             # if user['role'] == 'admin':
             #     return redirect(url_for('admin'))
             # else:
@@ -67,7 +67,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('Vous êtes déconnecté avec succès.', 'success')
+    
     return redirect(url_for('login_bp.login'))
 
 
@@ -109,7 +109,7 @@ def register():
             new_user = {'username': username, 'password': hashed_password, 'role': role}
 
         db.users.insert_one(new_user)
-        flash("Inscription réussie ! Veuillez vous connecter.", 'success')
+        
         return redirect(url_for('login_bp.login'))
 
     return render_template('register.html' , doctors=doctors)
