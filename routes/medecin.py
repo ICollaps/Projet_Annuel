@@ -74,6 +74,7 @@ def medecin_predictions():
 
 @medecin_bp.route('/medecin/form')
 @login_required
+@medecin_required
 def med_form():
 
     patients = db.users.find({'role': 'patient'})
@@ -83,6 +84,7 @@ def med_form():
 
 @medecin_bp.route('/medecin/predict', methods=['POST'])
 @login_required
+@medecin_required
 def med_predict():
     PRG = float(request.form['PRG'])
     PL = float(request.form['PL'])
