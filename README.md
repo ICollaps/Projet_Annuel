@@ -72,13 +72,9 @@ Le projet est conçu pour être déployé sur une instance AWS EC2. Vous devrez 
 
 - Novaretti Rémy
 - Collas Pierre
-- Dellers Rémi
+- Delers Rémi
 
 ## Remerciements
 
-- Chapeau à toute personne dont le code a été utilisé
-- Inspiration
-- etc
-
-
-
+- Quentin TOULOU pour l'aide apportée au projet lorsque nous avions des questions et des points bloquants.
+- Marie-Caroline LONGIN pour l'enseignement de la méthodologie agile qui nous a beaucoup servi durant ce projet.
