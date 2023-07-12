@@ -7,3 +7,4 @@ pymongo
 FLAML
 scikit-learn == 1.2.2
 pytest
+requests

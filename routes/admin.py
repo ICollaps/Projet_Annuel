@@ -2,10 +2,11 @@ from flask import Blueprint, render_template , abort , redirect , request , flas
 from flask_login import login_required , current_user
 from bson import ObjectId
 from functools import wraps
+from utils.config import db , model
+import numpy as np
+import requests
 
-from utils.config import db
-
-
+from flask import jsonify
 
 admin_bp = Blueprint('admin_bp', __name__)
 
@@ -22,6 +23,27 @@ def admin_required(f):
 
 
 
+@admin_bp.route('/statut_model')
+def statut_model():
+    try:
+        # Essai d'une prédiction avec une entrée vide
+        model.predict(np.array([0, 0, 0, 0, 0, 0, 0, 0, 0]).reshape(1, -1))
+        return jsonify({"statut": "OK"})
+    except Exception as e:
+        # Si une exception est levée, renvoie l'erreur.
+        return jsonify({"statut": "Erreur", "message": str(e)})
+
+@admin_bp.route('/statut_db')
+def statut_db():
+    try:
+        # Essai de lire un document dans la base de données
+        db.users.find_one()
+        return jsonify({"statut": "OK"})
+    except Exception as e:
+        # Si une exception est levée, renvoie l'erreur.
+        return jsonify({"statut": "Erreur", "message": str(e)})
+
+
 @admin_bp.route('/admin')
 @login_required
 @admin_required
@@ -31,9 +53,14 @@ def admin():
 
     my_id = current_user.id
 
+    statut_model = requests.get('http://localhost:5000/statut_model')
+    statut_db = requests.get('http://localhost:5000/statut_db')
+    # print(statut)
+   
+
     users = db.users.find({"_id": {"$ne": ObjectId(my_id)}})
     predictions = db.predictions.find()
-    return render_template('admin.html', users=users , predictions=predictions)
+    return render_template('admin.html', users=users , predictions=predictions , statut_model=statut_model.json(), statut_db=statut_db.json())
 
 
 

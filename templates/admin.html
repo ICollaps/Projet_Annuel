@@ -105,14 +105,27 @@ table th {
     {% endif %}
     {% endwith %}
     <h1>Pannel d'administration</h1>
+    <h2>Statut du système</h2>
+            <p style="color: {% if statut_model.statut == 'OK' %}green{% else %}red{% endif %};">
+                Statut du modèle : {{ statut_model.statut }}
+            </p>
+            {% if statut_model.statut == 'Erreur' %}
+                <p>Message d'erreur du modèle : {{ statut_model.message }}</p>
+            {% endif %}
+            
+            <p style="color: {% if statut_db.statut == 'OK' %}green{% else %}red{% endif %};">
+                Statut de la base de données : {{ statut_db.statut }}
+            </p>
+            {% if statut_db.statut == 'Erreur' %}
+                <p>Message d'erreur de la base de données : {{ statut_db.message }}</p>
+            {% endif %}
     <div class="scrollable-container">
       <div>
         
         <div class="scrollable-table">
             <h2>Liste des utilisateurs</h2>
             
-            
-            
+    
             <form action="{{ url_for('admin_bp.delete_users') }}" method="POST">
                 <button type="submit" class="btn-delete">Supprimer les utilisateurs sélectionnés</button>
                 <table>
