@@ -11,12 +11,18 @@ def validate_input(data):
     Cette fonction valide les données entrées par l'utilisateur.
     Elle retourne True si toutes les données sont valides, sinon elle retourne False.
     """
-    for value in data:
+    for i, value in enumerate(data):
+
+        print(i)
+        print(value)
         # Vérifier si la valeur est numérique
         if not np.issubdtype(type(value), np.number):
             return False
         # Vérifier si la valeur est non négative
         if value < 0:
+            return False
+        # Vérifier si la valeur de Insurance est soit 0, soit 1
+        if i == len(data) - 1 and value not in [0, 1]:
             return False
         
     return True
