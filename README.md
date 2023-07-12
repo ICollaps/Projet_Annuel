@@ -40,19 +40,22 @@ L'application comprend plusieurs routes pour l'interaction de l'utilisateur :
 
 ### Routes du Patient (`routes/patient.py`)
 
-- `/health`: Méthode GET. Nécessite une connexion. Utilisé pour rendre le formulaire d'entrée de l'utilisateur pour les données de santé.
+- `/health`: Méthode GET. Nécessite une connexion. Utilisé pour rendre le formulaire de l'utilisateur pour les données de santé.
 - `/health/predict`: Méthode POST. Nécessite une connexion. Utilisé pour faire une prédiction basée sur les entrées de l'utilisateur.
 
 ### Routes Admin (`routes/admin.py`)
 
 - `/delete`: Méthode GET. Nécessite une connexion. Utilisé pour supprimer un utilisateur.
-- `/deletePatient`: Méthode GET. Nécessite une connexion. Utilisé pour supprimer un patient.
-- `/deleteMedecin`: Méthode GET. Nécessite une connexion. Utilisé pour supprimer un médecin.
+- `/delete_users`: Méthode GET. Nécessite une connexion. Utilisé pour supprimer un patient/medecin.
+- `/delete_predictions`: Méthode GET. Nécessite une connexion. Utilisé pour supprimer une prediction.
 
 ### Routes Medecin (`routes/medecin.py`)
 
-- `/mes_patients`: Méthode GET. Nécessite une connexion. Utilisé pour rendre une liste de patients pour l'utilisateur actuel (médecin).
-- `/mon_profil`: Méthode GET. Nécessite une connexion. Utilisé pour rendre le profil de l'utilisateur actuel (médecin).
+- `/predictions`: Méthode GET. Nécessite une connexion. Utilisé pour rendre une liste des prédictions et des analyses pour les patients de l'utilisateur actuel (médecin).
+- `/predictions/export`: Méthode POst. Nécessite une connexion. Utilisé pour permettre au médecin d'exporter les prédictions sous forme de csv.
+- `/form`: Méthode GET. Nécessite une connexion. Utilisé pour fournir au medecin le formulaire de santé.
+- `/upload`: Méthode POst. Nécessite une connexion. Utilisé pour permettre au médecin de publier un fichier csv avec l'ensemble de ses patients
+
 
 ## Exécution des Tests
 
