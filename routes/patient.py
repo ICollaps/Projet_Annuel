@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template , abort , redirect , request , flash , url_for , make_response
 from flask_login import login_required , current_user
 from bson import ObjectId
+from functools import wraps
 
 from utils.functions import validate_input , convert_numpy_int64 , send_email , generate_html_table
 from utils.config import model , db
@@ -8,17 +9,23 @@ from utils.config import model , db
 
 patient_bp = Blueprint('patient_bp', __name__)
 
+def patient_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != 'patient':
+            abort(403)  # Forbidden
+        return f(*args, **kwargs)
+    return decorated_function
 
 @patient_bp.route('/health')
 @login_required
+@patient_required
 def health():
     return render_template('user_input.html')
 
-
-
-
 @patient_bp.route('/health/predict', methods=['POST'])
 @login_required
+@patient_required
 def predict():
     PRG = float(request.form['PRG'])
     PL = float(request.form['PL'])
