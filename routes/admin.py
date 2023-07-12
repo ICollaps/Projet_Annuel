@@ -39,10 +39,12 @@ def admin():
 def delete_users():
     # Getting the list of user IDs from the form
     user_ids = request.form.getlist('user_ids')
-
+    print(user_ids)
     # Deleting the users by their _id
     for user_id in user_ids:
-        db.users.delete_one({"_id": ObjectId(user_id)})
+        # Ensure the user_id is not an empty string
+        if user_id:
+            db.users.delete_one({"_id": ObjectId(user_id)})
     
     flash(f"{len(user_ids)} utilisateur(s) ont été supprimé(s) avec succès.", "success")
     return redirect(url_for('admin_bp.admin'))
@@ -57,6 +59,7 @@ def delete_predictions():
     # Getting the list of prediction IDs from the form
     prediction_ids = request.form.getlist('prediction_ids')
 
+    print(prediction_ids)
     # Deleting the predictions by their _id
     for prediction_id in prediction_ids:
         db.predictions.delete_one({"_id": ObjectId(prediction_id)})

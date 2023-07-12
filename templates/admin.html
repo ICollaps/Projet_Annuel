@@ -111,31 +111,32 @@ table th {
         <div class="scrollable-table">
             <h2>Liste des utilisateurs</h2>
             
-            <button type="submit" class="btn-delete">Supprimer les utilisateurs sélectionnés</button>
+            
             
             <form action="{{ url_for('admin_bp.delete_users') }}" method="POST">
-              <table>
-                <thead>
-                    <tr>
-                        <th></th> <!-- Colonne pour les checkboxes -->
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
+                <button type="submit" class="btn-delete">Supprimer les utilisateurs sélectionnés</button>
+                <table>
+                    <thead>
                         <tr>
-                            <td><input type="checkbox" name="user_ids" value="{{ user.id }}"></td> <!-- Checkbox pour chaque ligne -->
-                            <td>{{ user.id }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>****</td>
-                            <td>{{ user.role }}</td>
+                            <th></th> <!-- Colonne pour les checkboxes -->
+                            
+                            <th>Username</th>
+                            <th>Password</th>
+                            <th>Role</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td><input type="checkbox" name="user_ids" value="{{ user._id }}"></td> <!-- Checkbox pour chaque ligne -->
+                                
+                                <td>{{ user.username }}</td>
+                                <td>****</td>
+                                <td>{{ user.role }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             
         </form>
       </div>
