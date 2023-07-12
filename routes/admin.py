@@ -26,7 +26,12 @@ def admin_required(f):
 @login_required
 @admin_required
 def admin():
-    users = db.users.find()
+
+    
+
+    my_id = current_user.id
+
+    users = db.users.find({"_id": {"$ne": ObjectId(my_id)}})
     predictions = db.predictions.find()
     return render_template('admin.html', users=users , predictions=predictions)
 
