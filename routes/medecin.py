@@ -52,7 +52,6 @@ def medecin_predictions():
     # Formatage des prédictions
     formatted_predictions = [{
         'id': str(p['_id']),
-        'user_id': p['user_id'],
         'PRG': p['PRG'],
         'PL': p['PL'],
         'PR': p['PR'],

@@ -36,9 +36,14 @@ function createPredictionChart(predictionCounts) {
 
     option = {
         title: {
-            text: 'Distribution of Predictions'
+            text: 'Distribution des Prédictions'
         },
         tooltip: {},
+        legend: {
+            orient: 'vertical',
+            left: 'right',
+            data: ['0', '1'] // les noms de vos séries
+        },
         xAxis: {
             data: ["0", "1"],
             show: false,  // Add this line
@@ -47,9 +52,12 @@ function createPredictionChart(predictionCounts) {
         series: [{
             name: 'Count',
             type: 'pie',
-            data: predictionCounts
+            data: predictionCounts.map((count, index) => {
+                return {value: count, name: index.toString()}  // assigner un nom à chaque série
+            })
         }]
     };
 
     option && myChart.setOption(option);
 }
+

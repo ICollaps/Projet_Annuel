@@ -1,19 +1,10 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Menu Admin</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style_menu.css') }}">
-  </head>
-  <body>
+{% extends 'base_admin.html' %}
+
+{% block custom_css %}
+<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style_menu.css') }}"> -->
+{% endblock %}
+
+{% block content %}
     <h1>Menu Admin</h1>
-    <nav>
-      <ul>
-        <li><a href="{{ url_for('admin_bp.admin') }}">Admin</a></li>
-      </ul>
-    </nav>
-    <p>
-      <a href="{{ url_for('login_bp.logout') }}">Se déconnecter</a>
-    </p>
-  </body>
-</html>
+   
+{% endblock %}

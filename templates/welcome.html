@@ -2,12 +2,52 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bienvenue</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style_welcome.css') }}">
+    <title>MedicAI</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style_welcome.css') }}"> -->
+    <style>
+      body {
+        background: url('{{ url_for('static', filename='img/img_welcome.png') }}') center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        background-color: rgba(255, 255, 255, 0.9); /* Ajoutez une couleur de fond avec une légère transparence */
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        max-width: 400px;
+        width: 80%;
+      }
+      h1 {
+        margin-bottom: 30px;
+      }
+      .btn {
+        display: block;
+        margin: 10px 0;
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .btn:hover {
+        background-color: #0056b3;
+      }
+
+      .logo {
+        width: 70%;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
-      <h1>Bienvenue sur notre application</h1>
+      <h1>Bienvenue sur MedicAI</h1>
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo">
       <div class="buttons">
         <a class="btn" href="{{ url_for('login_bp.login') }}">Se connecter</a>
         <a class="btn" href="{{ url_for('login_bp.register') }}">S'inscrire</a>

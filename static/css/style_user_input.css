@@ -1,12 +1,10 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #242424;
+  /* background-color: #f5f5f5; */
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
 }
 
 h1 {
@@ -16,17 +14,30 @@ h1 {
   color: #333;
 }
 
-form {
+form.prediction-form {
   margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  align-items: start; 
+  gap: 20px; 
+  padding: 20px; 
+  background-color: #ffffff; 
+  border-radius: 10px;
+  max-width: 800px; 
+  margin: auto;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 label {
   display: block;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   font-weight: bold;
+  /* text-align: center; */
 }
 
 .input-wrapper {
@@ -36,17 +47,19 @@ label {
 
 input[type="number"] {
   width: 200px;
-  padding: 10px;
+  /* padding: 10px; */
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin: 0;
+  padding: 0;
 }
 
 .input-wrapper i {
   position: absolute;
-  top: 50%;
-  right: 5px;
-  transform: translateY(-50%);
+  /* top: 50%; */
+  /* right: 1px; */
+  bottom: 5px;
+  /* transform: translateY(-50%); */
   color: #aaa;
   cursor: pointer;
 }
@@ -62,7 +75,7 @@ input[type="number"] {
   position: absolute;
   z-index: 1;
   top: -40px;
-  left: 50%;
+  left: 150px;
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.3s;
@@ -75,15 +88,17 @@ input[type="number"] {
 
 button[type="submit"] {
   padding: 10px 20px;
-  background-color: rgba(255, 255, 255, 0.658);
-  color: #000000;
+  background-color: #42C1BA;
+  
   border: none;
   border-radius: 5px;
   text-align: center;
   cursor: pointer;
+  grid-column: span 2; /* fait en sorte que le bouton s'étende sur deux colonnes */
+  justify-self: center; /* Centres the button */
 }
 
 button[type="submit"]:hover {
-  background-color: #000000;
-  color: #fff;
+  background-color: #2c807c;
+  
 }

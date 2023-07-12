@@ -4,6 +4,42 @@
     <meta charset="utf-8">
     <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style_login.css') }}">
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #f5f5f5;
+        font-family: 'Arial', sans-serif;
+      }
+      .container {
+        width: 80%;
+        max-width: 800px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #ffffff;
+      }
+      .login-image {
+        position: relative;
+        background: url('{{ url_for('static', filename='img/img_login.jpg') }}') center/cover no-repeat;
+      }
+      .logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        height: auto;
+      }
+      .login-form {
+        padding: 20px;
+      }
+      /* Ajoutez ici vos autres styles */
+    </style>
   </head>
   <body>
     {% if current_user.is_authenticated %}
@@ -12,27 +48,32 @@
       <a href="{{ url_for('login_bp.logout') }}">Se déconnecter</a>
     {% else %}
       <div class="container">
-        <h1>Login</h1>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-        
-        <form action="/login" method="post">
-          <label for="username">Nom d'utilisateur:</label>
-          <input type="text" name="username" required><br>
+        <div class="login-image">
+          <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo">
+        </div>
+        <div class="login-form">
+          <h1>Login</h1>
+          
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          
+          <form action="/login" method="post">
+            <label for="username">Nom d'utilisateur:</label>
+            <input type="text" name="username" required><br>
 
-          <label for="password">Mot de passe:</label>
-          <input type="password" name="password" required><br>
+            <label for="password">Mot de passe:</label>
+            <input type="password" name="password" required><br>
 
-          <button type="submit">Se connecter</button>
-        </form>
-        <br>
-        <a class="url_for_register" href="{{ url_for('login_bp.register') }}">Pas encore inscrit ? Inscrivez-vous ici</a>
+            <button type="submit">Se connecter</button>
+          </form>
+          <br>
+          <a class="url_for_register" href="{{ url_for('login_bp.register') }}">Pas encore inscrit ? Inscrivez-vous ici</a>
+        </div>
       </div>
     {% endif %}
   </body>
