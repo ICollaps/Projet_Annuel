@@ -7,6 +7,7 @@ RUN apt-get update && apt-get -y upgrade
 # Installer libgomp1 pour LightGBM
 RUN apt-get install -y libgomp1
 
+RUN pip install --upgrade pip
 # Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
